@@ -1,0 +1,63 @@
+.recipe-card {
+    width: 30%;
+    height: 50vh;
+    align-items: center;
+    margin: 5vb;
+}
+
+.recipe-grid {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    // justify-content: space-between; 
+}
+
+//   .recipe-card {
+//     flex: 0 1 calc(30% - 10px); 
+//     margin-bottom: 10vb; 
+//   }
+
+.example-header-image {
+    background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');
+    background-size: cover;
+}
+
+#recipe-img {
+    width: 40vb;
+    height: 40vh;
+}
+
+.difficulty-rating {
+    display: flex;
+    align-items: flex-end;
+}
+
+.rating-level {
+    width: 2vb;
+    background-color: gray;
+    margin-right: 0.5vb;
+}
+
+.rating-level.active {
+    background-color: yellow;
+}
+
+.rating-level:nth-child(1) {
+    height: 1vb;
+}
+
+.rating-level:nth-child(2) {
+    height: 2vb;
+}
+
+.rating-level:nth-child(3) {
+    height: 3vb;
+}
+
+.rating-level:nth-child(4) {
+    height: 4vb;
+}
+
+.rating-level:nth-child(5) {
+    height: 5vb;
+}

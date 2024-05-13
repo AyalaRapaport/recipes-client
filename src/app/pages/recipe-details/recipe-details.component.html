@@ -1,0 +1,59 @@
+<ul class="overview row">
+    <li class="overview-item col-1">
+        <img alt="ingredients_count"
+            src="https://foody.co.il/app/themes/Foody/resources/images/icons/ingedients@2x.png?ver=1.2" />
+        <div class="item-container">
+            <div class="key" style="padding-top: 2px;"> מרכיבים:</div>
+            <div class="value ingredients_count">{{recipe?.layers|countIngredients}} </div>
+        </div>
+    </li>
+    <li class="overview-item col-1">
+        <img alt="" src="https://foody.co.il/app/themes/Foody/resources/images/icons/clock@2x.png?ver=1.2">
+        <div class="item-container">
+            <div class="key-value preparation-time">
+                <span class="key">זמן הכנה:</span>
+                <br />
+                {{recipe?.preparationTime|time}}
+            </div>
+
+        </div>
+    </li>
+
+    <li class="overview-item difficulty col-1">
+        <div class="difficulty-container" style="top: 8%;">
+            <div class="key">
+                רמת קושי: </div>
+            <div class="value difficulty_level">
+                <div class="value difficulty_level">
+                    {{recipe&& Difficulity[recipe.difficulty] }}
+                </div>
+            </div>
+        </div>
+    </li>
+</ul>
+<div class="recipe-details">
+    <div class="recipe-header">
+        <h2>{{ recipe?.name }}</h2>
+        <p>קטגוריה: {{ recipe?.categoryName }}</p>
+    </div>
+    <div class="recipe-image">
+        <img src="{{ recipe?.image }}" alt="{{ recipe?.name }}">
+    </div>
+    <div class="recipe-ingredients">
+        <h3>רכיבים:</h3>
+        <ul>
+            <li *ngFor="let ingredient of recipe?.layers">
+                <span class="ingredient-icon">🥄</span> {{ ingredient?.description }}: {{ ingredient.ingredients.join(',
+                ') }}
+            </li>
+        </ul>
+    </div>
+    <div class="recipe-instructions">
+        <h3>אופן ההכנה:</h3>
+        <p>{{ recipe?.preparationInstructions }}</p>
+    </div>
+    <div class="recipe-actions">
+        <button mat-button>עריכה</button>
+        <button mat-button>מחיקה</button>
+    </div>
+</div>

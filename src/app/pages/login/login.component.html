@@ -1,0 +1,28 @@
+<form>
+  <mat-form-field>
+    <mat-label>שם משתמש</mat-label>
+    <input #username type="text" matInput [formControl]="usernameFormControl" [errorStateMatcher]="matcher"
+      placeholder="israel">
+
+    <mat-error *ngIf="usernameFormControl.hasError('required')">שם משתמש הוא <strong>שדה חובה</strong></mat-error>
+    <mat-error *ngIf="usernameFormControl.hasError('minlength')">שם משתמש חייב להכיל לפחות 2 תווים</mat-error>
+    <mat-error *ngIf="usernameFormControl.hasError('pattern')&& !usernameFormControl.hasError('minlength')">שם משתמש
+      יכול לכלול רק אותיות בעברית או אנגלית
+      ורווחים</mat-error>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>ססמא</mat-label>
+    <input [type]="hide ? 'password' : 'text'" #pass type="password" matInput [formControl]="passwordFormControl"
+      [errorStateMatcher]="matcher" placeholder="****">
+    <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+      [attr.aria-pressed]="hide">
+      <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+    </button>
+    <mat-error *ngIf="passwordFormControl.hasError('required')"> <strong>שדה חובה</strong></mat-error>
+    <mat-error *ngIf="passwordFormControl.hasError('minlength')"> ססמא חייבת להכיל לפחות 4 תווים</mat-error>
+  </mat-form-field>
+</form>
+
+<button (click)="login(username.value, pass.value)" class="button"
+  [disabled]="usernameFormControl.invalid || passwordFormControl.invalid">התחבר</button>
