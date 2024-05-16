@@ -1,33 +1,70 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Router } from '@angular/router';
+import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/forms';
+import { ErrorStateMatcher } from '@angular/material/core';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { UsersService } from '../../shared/services/users.service';
+import { User } from '../../shared/models/user';
+
+export class MyErrorStateMatcher implements ErrorStateMatcher {
+  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+    const isSubmitted = form && form.submitted;
+    return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
+  }
+}
+const USERNAME_REGEX = /^[a-zA-Zא-ת\s]{2,}$/;
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [],
   templateUrl: './register.component.html',
-  styleUrl: './register.component.scss'
+  styleUrl: './register.component.scss',
+  imports: [MatIconModule, MatButtonModule, CommonModule, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule]
 })
-export class RegisterComponent {
-  @Input() username: string = '';
-  @Input() password: string = '';
-  // username: string = '';
-  // password: string = '';
-constructor(){console.log("in"+this.username)}
-  // receiveCredentials(details: {username: string, password: string}) {
-  //   this.username = details.username;
-  //   this.password = details.password;
 
-  //   console.log(this.username);
-    
-  // }
-  receiveDetails(event: any) {    
-    const target = event.target as HTMLInputElement; 
-    if (target) {
-      const details = target.value; 
-      console.log(details);
+
+export class RegisterComponent {
+  emailV: string = ''
+  password: string = ''
+
+  ngOnInit() {
+    const state = history.state;
+    if (state && state.details) {
+      this.emailV = state.details.email;
+      this.password = state.details.password;
+      console.log(this.emailV);
+
     }
   }
-  
-  
-  
+  passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d).{4,}$/;
+  hide = true;
+  usernameFormControl = new FormControl('', [Validators.required, Validators.pattern(USERNAME_REGEX), Validators.minLength(2)]);
+  passwordFormControl = new FormControl('', [Validators.required, Validators.minLength(4),Validators.pattern(this.passwordRegex)])
+  emailFormControl = new FormControl('', [Validators.required, Validators.email]);
+  addressFormControl = new FormControl('', [Validators.required]);
+
+  matcher = new MyErrorStateMatcher();
+
+  constructor(private router: Router, private userService: UsersService) { }
+
+  signUp(name: string, pass: string, email: string, address: string) {
+    const user: User = {
+      username: name,
+      password: pass,
+      email: email,
+      address: address,
+    };
+    this.userService.signUp(user)
+      .subscribe(newUser => {
+        console.log('הרישום הושלם!', newUser);
+        this.router.navigateByUrl('allrecipes');
+      }, error => {
+        console.error('שגיאה :', error);
+      });
+  }
 }

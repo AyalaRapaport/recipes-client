@@ -43,8 +43,7 @@
         <h3>רכיבים:</h3>
         <ul>
             <li *ngFor="let ingredient of recipe?.layers">
-                <span class="ingredient-icon">🥄</span> {{ ingredient?.description }}: {{ ingredient.ingredients.join(',
-                ') }}
+                <span class="ingredient-icon">🥄</span> {{ ingredient?.description }}: {{ ingredient.ingredients.join(',') }}
             </li>
         </ul>
     </div>
@@ -52,8 +51,23 @@
         <h3>אופן ההכנה:</h3>
         <p>{{ recipe?.preparationInstructions }}</p>
     </div>
+    <div class="gallery-container">
+        <div class="gallery">
+          <button class="arrow left" (click)="showPrevious()">&lt;</button>
+          <div class="images">
+            <div *ngFor="let i of [0, 1]; let j = index">
+              <div *ngIf="images[(currentIndex + j) % images.length]">
+                <img [src]="images[(currentIndex + j) % images.length]" alt="Image" class="gallery-image">
+              </div>
+            </div>
+          </div>
+          <button class="arrow right" (click)="showNext()">&gt;</button>
+        </div>
+      </div>
+      
     <div class="recipe-actions">
         <button mat-button>עריכה</button>
         <button mat-button>מחיקה</button>
     </div>
+
 </div>

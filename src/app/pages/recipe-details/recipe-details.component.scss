@@ -1,4 +1,3 @@
-
 .recipe-details {
   border: 1px solid #ccc;
   border-radius: 8px;
@@ -19,7 +18,7 @@
 
 .recipe-image img {
   width: 100%;
-  max-height: 30vh; 
+  max-height: 30vh;
   object-fit: cover;
   border-radius: 8px;
 }
@@ -46,7 +45,7 @@
 }
 
 .recipe-instructions p {
-  white-space: pre-wrap; 
+  white-space: pre-wrap;
 }
 
 .recipe-actions button {
@@ -55,24 +54,28 @@
 
 .overview {
   display: flex;
-  justify-content: center;
+  justify-content: space-evenly;
   align-items: center;
   padding: 0;
   list-style: none;
   direction: rtl;
+  background-color: #fef5f6;
+  height: 25vh;
+  width: 50vw;
+  margin:auto;
 }
 
 .overview-item {
-  // flex: 1;
   width: 10vw;
-  height: 24vh;
+  height: 20vh;
   text-align: center;
   margin: 0 5px;
-  border: 1px solid #ccc;
+  background-color: white;
+  border-radius: 15%;
 }
 
 .overview-item img {
-  width: 4vw; 
+  width: 4vw;
   height: auto;
 }
 
@@ -93,4 +96,48 @@
   position: relative;
   top: 8%;
 }
+.gallery-container {
+  text-align: center;
+}
 
+.gallery {
+  position: relative;
+  display: flex;
+  align-items: center;
+  overflow: hidden; /* כדי להסתיר חלקית את התמונות החוצות */
+  width: 100%;
+}
+
+.images {
+  display: flex;
+  transition: transform 0.5s ease-in-out; 
+}
+
+.gallery-image {
+  width: 20vw;
+  height: auto;
+  margin: 0 10px;
+}
+
+.arrow {
+  top: 50%;
+  background-color: rgba(255, 255, 255, 0.7);
+  border: none;
+  color: #333;
+  font-size: 24px;
+  padding: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.arrow:hover {
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+.left {
+  left: 10px;
+}
+
+.right {
+  right: 10px;
+}

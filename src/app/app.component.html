@@ -1,3 +1,27 @@
+<div *ngIf="!isLoggedIn()" class="guest-profile">
+  <img class="icon" src="../assets/images/anonimy.png" alt="Guest Icon">
+  <p class="text">מצב אורח</p>
+</div>
+
+<div (click)="isShowProfile()" *ngIf="isLoggedIn()" class="outer-circle">
+  <div class="inner-circle">
+    <p class="letter">{{ getFirst()|uppercase}}</p>
+  </div>
+  <!-- <img alt="{{ getUser()?.username }}"> -->
+</div>
+
+<mat-card class="profile-container" *ngIf="showProfile">
+  <button (click)="isShowProfile()" class="close-button">×</button>
+  <mat-card-content class="profile-details">
+    <div mat-card-avatar class="avatar"></div>
+    <p>{{ getUser()?.username }}שם משתמש:</p>
+    <p>{{ getUser()?.address }}כתובת:</p>
+    <p>{{ getUser()?.email }}אימייל:</p>
+  </mat-card-content>
+</mat-card>
+
+
+
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <div class="container">
     <div class="collapse navbar-collapse" id="navbarNav">
@@ -14,8 +38,12 @@
         <li class="nav-item">
           <a class="nav-link" routerLink="register" routerLinkActive="active">הרשמה</a>
         </li>
+        <!-- *ngIf="isLoggedIn()" -->
+        <li  class="nav-item">
+          <a class="nav-link" routerLink="recipe-form" routerLinkActive="active">הוסף מתכון</a>
+        </li>
       </ul>
     </div>
   </div>
 </nav>
-<router-outlet/>
+<router-outlet />

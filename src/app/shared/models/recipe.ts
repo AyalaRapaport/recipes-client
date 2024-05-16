@@ -2,7 +2,7 @@ import { Difficulty } from "../difficulty";
 import { Layer } from "./layer";
 
 export class Recipe {
-    constructor(public id: number,
+    constructor(public _id: number,
         public name: string,
         public ctegoryId: number,
         public preparationTime: number,

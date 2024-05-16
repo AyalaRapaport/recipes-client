@@ -1,6 +1,6 @@
 <div class="recipe-grid">
-    @for (r of recipes; track r.id) {
-    <mat-card (click)="showDetails()" class="recipe-card">
+    @for (r of recipes; track r._id) {
+    <mat-card (click)="showDetails(r._id)" class="recipe-card">
         <mat-card-header>
             <!-- <div mat-card-avatar class="example-header-image"></div> -->
             <mat-card-title>{{r.name}}</mat-card-title>
@@ -8,18 +8,13 @@
         <img id="recipe-img" mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg"
             alt={{r.name}}>
         <!-- <mat-card-content>
-      <p>
-        The Shiba Inu is the smallest of the six original 
-      </p>
+      
     </mat-card-content> -->
         <mat-card-actions>
             <div class="difficulty-rating">
-                <span class="rating-level" [ngClass]="{ 'active': r.difficulty}"></span>
-                <span class="rating-level" [ngClass]="{ 'active': r.difficulty >= 2 }"></span>
-                <span class="rating-level" [ngClass]="{ 'active': r.difficulty >= 3 }"></span>
-                <span class="rating-level" [ngClass]="{ 'active': r.difficulty >= 4 }"></span>
-                <span class="rating-level" [ngClass]="{ 'active': r.difficulty >= 5 }"></span>
-            </div>
+                <span class="rating-level" *ngFor="let level of [1, 2, 3, 4, 5] let i=index" [appDifficulty]="{ index: i, difficulty: r.difficulty }"></span>
+              </div>
+              
             <button mat-button>{{r.preparationTime|time}}</button>
         </mat-card-actions>
     </mat-card>

@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { CountIngredientsPipe } from '../../shared/pipes/count-ingredients.pipe';
 import { TimePipe } from '../../shared/pipes/time.pipe';
 import { Difficulty } from '../../shared/difficulty';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-recipe-details',
@@ -14,15 +15,35 @@ import { Difficulty } from '../../shared/difficulty';
   styleUrl: './recipe-details.component.scss'
 })
 export class RecipeDetailsComponent {
-  [x: string]: any;
   recipe: Recipe | null = null;
   Difficulity = Difficulty
-  constructor(private recipeService: RecipesService) { }
+  currentIndex: number = 0;
 
+  constructor(private recipeService: RecipesService, private route: ActivatedRoute) { }
+
+  images: string[] = [
+    'https://material.angular.io/assets/img/examples/shiba2.jpg',
+    'https://foody.co.il/app/themes/Foody/resources/images/icons/clock@2x.png?ver=1.2',
+    'https://material.angular.io/assets/img/examples/shiba2.jpg',
+
+  ];
   ngOnInit() {
-    this.recipeService.getRecipeById("663e0d81955ac075a7561af5").subscribe(data => {
-      this.recipe = data;
-      console.log(this.recipe)
-    });
+    const recipeId = this.route.snapshot.paramMap.get('id');
+    if (recipeId) {
+      this.recipeService.getRecipeById(recipeId).subscribe(data => {
+        this.recipe = data;
+        console.log(this.recipe);
+      });
+    }
   }
+
+  showNext() {
+    this.currentIndex = (this.currentIndex + 1) % this.images.length;
+  }
+
+  showPrevious() {
+    this.currentIndex = (this.currentIndex - 1 + this.images.length) % this.images.length;
+  }
+  
+
 }

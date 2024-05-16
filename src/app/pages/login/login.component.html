@@ -1,14 +1,10 @@
 <form>
   <mat-form-field>
-    <mat-label>שם משתמש</mat-label>
-    <input #username type="text" matInput [formControl]="usernameFormControl" [errorStateMatcher]="matcher"
-      placeholder="israel">
-
-    <mat-error *ngIf="usernameFormControl.hasError('required')">שם משתמש הוא <strong>שדה חובה</strong></mat-error>
-    <mat-error *ngIf="usernameFormControl.hasError('minlength')">שם משתמש חייב להכיל לפחות 2 תווים</mat-error>
-    <mat-error *ngIf="usernameFormControl.hasError('pattern')&& !usernameFormControl.hasError('minlength')">שם משתמש
-      יכול לכלול רק אותיות בעברית או אנגלית
-      ורווחים</mat-error>
+    <mat-label>אימייל </mat-label>
+    <input #email type="text" matInput [formControl]="emailFormControl" [errorStateMatcher]="matcher"
+      placeholder="Ex. pat@example.com">
+    <mat-error *ngIf="emailFormControl.hasError('required')"> <strong>שדה חובה</strong></mat-error>
+    <mat-error *ngIf="emailFormControl.hasError('email')"> כתובת אימייל אינה תקינה </mat-error>
   </mat-form-field>
 
   <mat-form-field>
@@ -21,8 +17,10 @@
     </button>
     <mat-error *ngIf="passwordFormControl.hasError('required')"> <strong>שדה חובה</strong></mat-error>
     <mat-error *ngIf="passwordFormControl.hasError('minlength')"> ססמא חייבת להכיל לפחות 4 תווים</mat-error>
+    <mat-error *ngIf="passwordFormControl.hasError('pattern')"> ססמה חייבת להכיל לפחות מספר אחד ואות אחת</mat-error>
+
   </mat-form-field>
 </form>
 
-<button (click)="login(username.value, pass.value)" class="button"
-  [disabled]="usernameFormControl.invalid || passwordFormControl.invalid">התחבר</button>
+<button (click)="login(email.value, pass.value)" class="button"
+  [disabled]="emailFormControl.invalid || passwordFormControl.invalid">התחבר</button>
