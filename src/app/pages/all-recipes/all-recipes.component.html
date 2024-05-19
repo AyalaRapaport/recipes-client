@@ -1,3 +1,37 @@
+<mat-form-field appearance="outline" class="search-box">
+    <mat-label>חפש מתכון</mat-label>
+    <input matInput #search />
+    <button mat-icon-button matSuffix (click)="clearSearch()">
+        <mat-icon>close</mat-icon>
+    </button>
+</mat-form-field>
+<button (click)="applyFilter(search)">חפש</button>
+
+<mat-paginator [length]="100" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page">
+</mat-paginator>
+<div class="container">
+    <section class="section">
+        <span class="list-section">
+            <h3>סנן לפי</h3>
+        </span>
+        <span class="list-section">
+            <ul>
+                @for (subtask of task.subtasks; track subtask) {
+                <li>
+                    <mat-checkbox [(ngModel)]="subtask.completed" [color]="subtask.color"
+                        (ngModelChange)="updateAllComplete()">
+                        {{subtask.name}}
+                    </mat-checkbox>
+                </li>
+                }
+            </ul>
+        </span>
+    </section>
+
+</div>
+
+
+
 <div class="recipe-grid">
     @for (r of recipes; track r._id) {
     <mat-card (click)="showDetails(r._id)" class="recipe-card">
@@ -5,16 +39,16 @@
             <!-- <div mat-card-avatar class="example-header-image"></div> -->
             <mat-card-title>{{r.name}}</mat-card-title>
         </mat-card-header>
-        <img id="recipe-img" mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg"
-            alt={{r.name}}>
+        <img id="recipe-img" mat-card-image src={{r.image}} alt={{r.name}}>
         <!-- <mat-card-content>
       
     </mat-card-content> -->
         <mat-card-actions>
             <div class="difficulty-rating">
-                <span class="rating-level" *ngFor="let level of [1, 2, 3, 4, 5] let i=index" [appDifficulty]="{ index: i, difficulty: r.difficulty }"></span>
-              </div>
-              
+                <span class="rating-level" *ngFor="let level of [1, 2, 3, 4, 5] let i=index"
+                    [appDifficulty]="{ index: i, difficulty: r.difficulty }"></span>
+            </div>
+
             <button mat-button>{{r.preparationTime|time}}</button>
         </mat-card-actions>
     </mat-card>

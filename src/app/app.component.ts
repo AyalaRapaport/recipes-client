@@ -10,14 +10,13 @@ import { MatCardModule } from '@angular/material/card';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, RouterModule, FormsModule, CommonModule,UpperCasePipe,MatCardModule],
+  imports: [RouterOutlet, RouterModule, FormsModule, CommonModule, UpperCasePipe, MatCardModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
-
   showProfile: boolean = false;
-  constructor(private authService: AuthService, private dialog: MatDialog) { }
+  constructor(private authService: AuthService) { }
   title = 'recipes';
   // user: User | undefined = this.authService.currentUser
 
@@ -28,23 +27,16 @@ export class AppComponent {
   isLoggedIn(): boolean {
     return this.authService.isLoggedIn;
   }
-  getFirst():string{
-    return this.authService.currentUser?.username?this.authService.currentUser.username[0]:"a"
+  getFirst(): string {
+    return this.authService.currentUser?.username ? this.authService.currentUser.username[0] : "a"
   }
-  getUser():User|undefined {
-    console.log(this.authService.currentUser);
-    
+  getUser(): User | undefined {
     return this.authService.currentUser
   }
-  openDialog(enterAnimationDuration: string, exitAnimationDuration: string): void {
-    this.dialog.open(DialogAnimationsExampleDialog, {
-      width: '250px',
-      enterAnimationDuration,
-      exitAnimationDuration,
-    });
-  }
-}
 
-export class DialogAnimationsExampleDialog {
-  constructor(public dialogRef: MatDialogRef<DialogAnimationsExampleDialog>) { }
+  logOut() {
+    this.authService.logout();
+    this.showProfile = false
+  }
+
 }

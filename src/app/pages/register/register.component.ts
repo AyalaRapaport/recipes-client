@@ -10,6 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { UsersService } from '../../shared/services/users.service';
 import { User } from '../../shared/models/user';
+import { AuthService } from '../../shared/services/auth.service';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -50,7 +51,7 @@ export class RegisterComponent {
 
   matcher = new MyErrorStateMatcher();
 
-  constructor(private router: Router, private userService: UsersService) { }
+  constructor(private router: Router, private userService: UsersService,private authService:AuthService) { }
 
   signUp(name: string, pass: string, email: string, address: string) {
     const user: User = {
@@ -61,6 +62,7 @@ export class RegisterComponent {
     };
     this.userService.signUp(user)
       .subscribe(newUser => {
+        this.authService.login(newUser);
         console.log('הרישום הושלם!', newUser);
         this.router.navigateByUrl('allrecipes');
       }, error => {

@@ -1,5 +1,6 @@
 import { Difficulty } from "../difficulty";
 import { Layer } from "./layer";
+import { User } from "./user";
 
 export class Recipe {
     constructor(public _id: number,
@@ -10,7 +11,7 @@ export class Recipe {
         public date: Date,
         public ingredients: string[],
         public preparationInstructions: string,
-        public addedByUserId: number,
+        public addedBy: User,
         public image: string,
         public categoryName:string,
         public layers:Layer[]

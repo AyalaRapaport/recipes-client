@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Recipe } from '../../shared/models/recipe';
 import { RecipesService } from '../../shared/services/recipes.service';
 import { CommonModule } from '@angular/common';
@@ -6,6 +6,8 @@ import { CountIngredientsPipe } from '../../shared/pipes/count-ingredients.pipe'
 import { TimePipe } from '../../shared/pipes/time.pipe';
 import { Difficulty } from '../../shared/difficulty';
 import { ActivatedRoute } from '@angular/router';
+import { AuthService } from '../../shared/services/auth.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-recipe-details',
@@ -14,12 +16,13 @@ import { ActivatedRoute } from '@angular/router';
   templateUrl: './recipe-details.component.html',
   styleUrl: './recipe-details.component.scss'
 })
-export class RecipeDetailsComponent {
+export class RecipeDetailsComponent implements OnInit {
   recipe: Recipe | null = null;
   Difficulity = Difficulty
   currentIndex: number = 0;
+  isOwner: boolean | undefined = false
 
-  constructor(private recipeService: RecipesService, private route: ActivatedRoute) { }
+  constructor(private recipeService: RecipesService, private route: ActivatedRoute, private authService: AuthService) { }
 
   images: string[] = [
     'https://material.angular.io/assets/img/examples/shiba2.jpg',
@@ -30,13 +33,19 @@ export class RecipeDetailsComponent {
   ngOnInit() {
     const recipeId = this.route.snapshot.paramMap.get('id');
     if (recipeId) {
-      this.recipeService.getRecipeById(recipeId).subscribe(data => {
+      this.recipeService.getRecipeById(+recipeId).subscribe(data => {
         this.recipe = data;
-        console.log(this.recipe);
+        this.updateIsOwner();
       });
     }
+  
   }
 
+
+
+  updateIsOwner() {
+    this.isOwner = this.authService.currentUser && (this.authService.currentUser._id === this.recipe?.addedBy?._id);
+  }
   showNext() {
     this.currentIndex = (this.currentIndex + 1) % this.images.length;
   }
@@ -44,6 +53,5 @@ export class RecipeDetailsComponent {
   showPrevious() {
     this.currentIndex = (this.currentIndex - 1 + this.images.length) % this.images.length;
   }
-  
 
 }

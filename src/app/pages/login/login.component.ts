@@ -41,8 +41,7 @@ export class LoginComponent {
     try {
       const user = await this.userService.signIn(email, password).toPromise();
       if (user?.email) {
-        this.authService.currentUser = user
-        this.authService.isLoggedIn = true
+        this.authService.login(user);
         this.router.navigateByUrl("allrecipes");
       } else {
         this.router.navigate(['register'], { state: { details: { email, password } } });

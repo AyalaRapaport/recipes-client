@@ -1,20 +1,26 @@
-<form [formGroup]="recipeForm" (submit)="addRecipe()" >
-    <mat-form-field>
-        <mat-label>שם המתכון</mat-label>
-        <input formControlName="recipeName" matInput>
-      </mat-form-field>
-      {{recipeForm.controls["recipeName"].errors|json}}
+<form [formGroup]="recipeForm" (submit)="addRecipe()">
+  
+  <mat-form-field>
+    <mat-label>שם המתכון</mat-label>
+    <input formControlName="recipeName" matInput>
+  </mat-form-field>
+  {{recipeForm.controls["recipeName"].errors|json}}
 
-      <mat-form-field>
-        <mat-label>Select</mat-label>
-        <mat-select>
-          <mat-option value="one">First option</mat-option>
-          <mat-option value="two">Second option</mat-option>
-        </mat-select>
-      </mat-form-field>
-      <mat-form-field>
+  <mat-form-field formArrayName="categories">
+    <mat-label>קטגוריות</mat-label>
+    <mat-select [(value)]="selectedCategories" multiple>
+      <mat-option *ngFor="let c of categoryList" [value]="c.name">{{c.name}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <!-- <button mat-icon-button matTooltip="Warn" color="warn"></button> -->
+  <button type="submit" mat-flat-button color="warn">הוסף מתכון</button>
+
+  <!-- <button mat-button matTooltip="Warn" color="warn" type="submit" mat-button color="warn">הוסף מתכון</button> -->
+</form>
+
+<!-- <mat-form-field>
+        
         <mat-label>Textarea</mat-label>
         <textarea matInput></textarea>
       </mat-form-field>
-      
-</form>
+       -->

@@ -37,7 +37,7 @@
         <p>קטגוריה: {{ recipe?.categoryName }}</p>
     </div>
     <div class="recipe-image">
-        <img src="{{ recipe?.image }}" alt="{{ recipe?.name }}">
+        <img  src="{{ recipe?.image }}" alt="{{ recipe?.name }}">
     </div>
     <div class="recipe-ingredients">
         <h3>רכיבים:</h3>
@@ -51,7 +51,7 @@
         <h3>אופן ההכנה:</h3>
         <p>{{ recipe?.preparationInstructions }}</p>
     </div>
-    <div class="gallery-container">
+    <!-- <div class="gallery-container">
         <div class="gallery">
           <button class="arrow left" (click)="showPrevious()">&lt;</button>
           <div class="images">
@@ -63,11 +63,10 @@
           </div>
           <button class="arrow right" (click)="showNext()">&gt;</button>
         </div>
-      </div>
+      </div> -->
       
     <div class="recipe-actions">
-        <button mat-button>עריכה</button>
-        <button mat-button>מחיקה</button>
+        <button *ngIf="isOwner" mat-button>עריכה</button>
     </div>
 
 </div>
