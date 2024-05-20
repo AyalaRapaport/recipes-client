@@ -3,11 +3,18 @@
     margin-right: 0;
 }
 
+.search-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 .container {
     display: flex;
     justify-content: space-between;
     float: right;
-
+    // width: 8%;
+    margin-right: 10px;
 }
 
 .margin {
@@ -20,17 +27,32 @@ ul {
 }
 
 .recipe-card {
-    width: 27%;
+    width: 30vw;
     height: 50vh;
     align-items: center;
     margin: 5vb;
+}
+
+.flex-page {
+    display: flex;
+    direction: rtl;
 }
 
 .recipe-grid {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    width: 80%;
+    width: 90%;
+}
+
+.not-found {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-left: auto;
+    margin-right: auto;
+
 }
 
 .example-header-image {
@@ -46,6 +68,7 @@ ul {
 .difficulty-rating {
     display: flex;
     align-items: flex-end;
+    direction: ltr;
 }
 
 .rating-level {

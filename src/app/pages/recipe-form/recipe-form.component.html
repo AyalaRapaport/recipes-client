@@ -1,10 +1,22 @@
 <form [formGroup]="recipeForm" (submit)="addRecipe()">
-  
+
   <mat-form-field>
     <mat-label>שם המתכון</mat-label>
     <input formControlName="recipeName" matInput>
   </mat-form-field>
-  {{recipeForm.controls["recipeName"].errors|json}}
+
+  <mat-form-field>
+    <mat-label>תיאור </mat-label>
+    <input formControlName="description" matInput>
+  </mat-form-field>
+
+  <section class="example-section">
+    <label class="example-margin">האם פרטי:</label>
+    <mat-radio-group [(ngModel)]="labelPosition">
+      <mat-radio-button class="example-margin" value="לא">לא</mat-radio-button>
+      <mat-radio-button class="example-margin" value="כן">כן</mat-radio-button>
+    </mat-radio-group>
+  </section>
 
   <mat-form-field formArrayName="categories">
     <mat-label>קטגוריות</mat-label>
@@ -12,15 +24,48 @@
       <mat-option *ngFor="let c of categoryList" [value]="c.name">{{c.name}}</mat-option>
     </mat-select>
   </mat-form-field>
-  <!-- <button mat-icon-button matTooltip="Warn" color="warn"></button> -->
+  <mat-accordion class="example-headers-align" multi>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>מרכיבים </mat-panel-title>
+        <mat-panel-description>
+          <mat-icon>restaurant_menu</mat-icon>
+          <!-- <mat-icon>fastfood</mat-icon>
+          <mat-icon>kitchen</mat-icon>
+          <mat-icon>local_grocery_store</mat-icon>
+          <mat-icon>restaurant</mat-icon> -->
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      <div formArrayName="ingredients">
+        <div *ngFor="let ingredient of ingredients.controls; let i = index">
+          <mat-form-field [formGroupName]="i">
+            <mat-label>{{i+1}}</mat-label>
+            <input formControlName="name" matInput (input)="onIngredientInput(i)">
+          </mat-form-field>
+        </div>
+      </div>
+    </mat-expansion-panel>
+  </mat-accordion>
+
+  <mat-accordion class="example-headers-align" multi>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>הוראות הכנה </mat-panel-title>
+        <mat-panel-description>
+          <mat-icon>list</mat-icon>
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      <div formArrayName="instructions">
+        <div *ngFor="let instruction of instructions.controls; let i = index">
+          <mat-form-field [formGroupName]="i">
+            <mat-label>{{i+1}}</mat-label>
+            <input formControlName="step" matInput (input)="onInstructionInput(i)">
+          </mat-form-field>
+        </div>
+      </div>
+    </mat-expansion-panel>
+  </mat-accordion>
   <button type="submit" mat-flat-button color="warn">הוסף מתכון</button>
 
   <!-- <button mat-button matTooltip="Warn" color="warn" type="submit" mat-button color="warn">הוסף מתכון</button> -->
 </form>
-
-<!-- <mat-form-field>
-        
-        <mat-label>Textarea</mat-label>
-        <textarea matInput></textarea>
-      </mat-form-field>
-       -->

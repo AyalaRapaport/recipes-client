@@ -84,26 +84,24 @@ export class AllRecipesComponent {
   }
 
   applyFilter(filterValue: any) {
-    console.log(filterValue);
-
     this.recipeService.getAllRecipes(filterValue.value).subscribe(data => {
       this.recipes = data
-      console.log(this.recipes)
     });
   }
 
-clearSearch() {
-  this.applyFilter('');
-}
+  clearSearch(search: any) {
+    search.value = '';
+    this.applyFilter('');
+  }
 
-showDetails(id: number) {
-  this.recipeId = id;
-  this.router.navigateByUrl(`recipeDetails/${this.recipeId}`);
-}
+  showDetails(id: number) {
+    this.recipeId = id;
+    this.router.navigateByUrl(`recipeDetails/${this.recipeId}`);
+  }
 
-filterMyRecipe() {
-  this.recipeService.getRecipesByUserId(this.authService.currentUser?._id).subscribe(data => { this.recipes = data }
-  )
-}
+  filterMyRecipe() {
+    this.recipeService.getRecipesByUserId(this.authService.currentUser?._id).subscribe(data => { this.recipes = data }
+    )
+  }
 
 }

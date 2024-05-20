@@ -1,14 +1,16 @@
-<mat-form-field appearance="outline" class="search-box">
-    <mat-label>חפש מתכון</mat-label>
-    <input matInput #search />
-    <button mat-icon-button matSuffix (click)="clearSearch()">
-        <mat-icon>close</mat-icon>
-    </button>
-</mat-form-field>
-<button (click)="applyFilter(search)">חפש</button>
-
-<mat-paginator [length]="100" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page">
-</mat-paginator>
+<div class="search-box">
+    <mat-form-field appearance="outline">
+        <mat-label>חפש מתכון</mat-label>
+        <input matInput #search />
+        <button mat-icon-button matSuffix (click)="clearSearch(search) ">
+            <mat-icon>close</mat-icon>
+        </button>
+    </mat-form-field>
+    <button (click)="applyFilter(search)">חפש</button>
+</div>
+<!-- <mat-paginator [length]="100" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page">
+</mat-paginator> -->
+<div class="flex-page">
 <div class="container">
     <section class="section">
         <span class="list-section">
@@ -27,10 +29,7 @@
             </ul>
         </span>
     </section>
-
 </div>
-
-
 
 <div class="recipe-grid">
     @for (r of recipes; track r._id) {
@@ -53,4 +52,16 @@
         </mat-card-actions>
     </mat-card>
     }
+    @empty {
+    <div class="not-found">
+        <img src="https://foody.co.il/app/themes/Foody/resources/images/empty-recipes.svg" alt="לא נמצאו תוצאות">
+        <h2>
+            לא נמצאו תוצאות <br>
+            <br>
+            אבל אולי יעניין אותך גם…
+        </h2>
+    </div>
+
+    }
+</div>
 </div>

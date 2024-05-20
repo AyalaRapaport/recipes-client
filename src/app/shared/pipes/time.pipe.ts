@@ -17,7 +17,7 @@ export class TimePipe implements PipeTransform {
           timeString += ` ו- ${remainderMinutes} דקות`;
         }
       } else {
-        timeString += `דקות ${remainderMinutes} `;
+        timeString += ` ${remainderMinutes} דקות`;
       }
     }
 
