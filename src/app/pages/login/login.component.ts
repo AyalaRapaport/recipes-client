@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
@@ -40,9 +40,10 @@ export class LoginComponent {
   async login(email: string, password: string) {
     try {
       const user = await this.userService.signIn(email, password).toPromise();
-      if (user?.email) {
-        this.authService.login(user);
+      if (user?.user.email) {
+        this.authService.login(user.user);
         this.router.navigateByUrl("allrecipes");
+        this.userService.token = user.token;
       } else {
         this.router.navigate(['register'], { state: { details: { email, password } } });
       }

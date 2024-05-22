@@ -33,7 +33,7 @@ export class RecipeDetailsComponent implements OnInit {
   ngOnInit() {
     const recipeId = this.route.snapshot.paramMap.get('id');
     if (recipeId) {
-      this.recipeService.getRecipeById(+recipeId).subscribe(data => {
+      this.recipeService.getRecipeById(recipeId).subscribe(data => {
         this.recipe = data;
         this.updateIsOwner();
       });

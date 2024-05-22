@@ -1,4 +1,4 @@
-import { Component, NgModule } from '@angular/core';
+import { Component } from '@angular/core';
 import { Recipe } from '../../shared/models/recipe';
 import { RecipesService } from '../../shared/services/recipes.service';
 import { MatButtonModule } from '@angular/material/button';
@@ -31,6 +31,7 @@ export interface Task {
 })
 export class AllRecipesComponent {
 
+
   constructor(private recipeService: RecipesService, private router: Router, private authService: AuthService) { }
 
   ngOnInit() {
@@ -42,6 +43,8 @@ export class AllRecipesComponent {
 
   recipeId: number = 0
   recipes: Recipe[] = [];
+  preparationTime: number = 0;
+
   task: Task = {
     name: 'סנן לפי',
     completed: false,
@@ -54,6 +57,12 @@ export class AllRecipesComponent {
   };
 
   allComplete: boolean = false;
+
+  searchRecipeByPreparationTime(time: number) {
+    this.recipeService.getRecipesByPreparationTime(time).subscribe(data => {
+      this.recipes = data;
+    });
+  }
 
   updateAllComplete() {
     this.allComplete = this.task.subtasks != null && this.task.subtasks.every(t => t.completed);

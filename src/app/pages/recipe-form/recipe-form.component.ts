@@ -6,19 +6,17 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { CategoriesService } from '../../shared/services/categories.service';
 import { Category } from '../../shared/models/category';
-import { MatAccordion, MatExpansionModule } from '@angular/material/expansion';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatRadioModule } from '@angular/material/radio';
-import {FormsModule} from '@angular/forms';
-
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-recipe-form',
   standalone: true,
-  imports: [FormsModule,CommonModule, MatRadioModule, ReactiveFormsModule, MatSelectModule, MatInputModule, MatFormFieldModule, MatButtonModule, MatButtonModule, MatExpansionModule, MatIconModule, MatDatepickerModule],
+  imports: [FormsModule, CommonModule, MatRadioModule, ReactiveFormsModule, MatSelectModule, MatInputModule, MatFormFieldModule, MatButtonModule, MatButtonModule, MatExpansionModule, MatIconModule, MatDatepickerModule],
   templateUrl: './recipe-form.component.html',
   styleUrl: './recipe-form.component.scss'
 })

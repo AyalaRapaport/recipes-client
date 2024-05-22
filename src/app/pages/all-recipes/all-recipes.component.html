@@ -16,6 +16,11 @@
         <span class="list-section">
             <h3>סנן לפי</h3>
         </span>
+        <mat-form-field class="example-full-width inp">
+            <mat-label>זמן הכנה:</mat-label>
+            <input type="number" (input)="searchRecipeByPreparationTime(preparationTime.value)" ngModel
+                #preparationTime="ngModel" matInput  value="">
+        </mat-form-field>
         <span class="list-section">
             <ul>
                 @for (subtask of task.subtasks; track subtask) {

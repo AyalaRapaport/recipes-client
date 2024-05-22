@@ -1,4 +1,4 @@
-<form>
+<form #loginForm="ngForm">
   <mat-form-field>
     <mat-label>אימייל </mat-label>
     <input #email type="text" matInput [formControl]="emailFormControl" [errorStateMatcher]="matcher"

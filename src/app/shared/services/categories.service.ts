@@ -1,13 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Category } from '../models/category';
+import { environment } from '../../../environments/environment.development';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CategoriesService {
-
-  url: string = "http://localhost:5000/categories/"
+  private categoryURL = `${environment.apiURL}/categories/`;
   categories: Category[] = []
   constructor(private http: HttpClient) { }
 
@@ -16,6 +16,6 @@ export class CategoriesService {
   //     .subscribe(x => this.categories = x)
   // }
   getCategories() {
-    return this.http.get<Category[]>(this.url)
+    return this.http.get<Category[]>(this.categoryURL)
   }
 }
