@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Recipe } from '../models/recipe';
-import { Observable } from 'rxjs';
+import { Observable, catchError, tap, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
+import { JsonPipe } from '@angular/common';
 @Injectable({
   providedIn: 'root'
 })
@@ -32,7 +33,18 @@ export class RecipesService {
     return this.http.get<Recipe[]>(this.recipeURL + 'recipeByPreparationTime/' + preparationTime);
   }
 
-  
+  addRecipe(recipe: Recipe): Observable<Recipe> {
+    console.log(recipe);
+    console.log(this.recipeURL);
+    return this.http.post<Recipe>(this.recipeURL, JSON.stringify(recipe)).
+      pipe(
+        tap(response => console.log("Response from server:", response)),
+        catchError(error => {
+          console.error("Error occurred:", error);
+          return throwError(error);
+        })
+      );
+  }
 
 
 }

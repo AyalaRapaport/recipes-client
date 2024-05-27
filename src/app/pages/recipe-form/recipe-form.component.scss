@@ -1,6 +1,89 @@
 :host {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+  margin: auto;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+.example-full-width {
+  width: 100%;
+}
+
+.inp {
+  width: calc(50% - 10px);
+}
+
+.mat-form-field {
+  margin-bottom: 20px;
+}
+
+.example-headers-align {
+  width: 100%;
+}
+
+.mat-expansion-panel-header {
+  justify-content: space-between;
+}
+
+.section {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+.row {
+  display: flex;
+  gap: 20px;
+  width: 100%;
+}
+
+.row .mat-form-field {
+  flex: 1;
+}
+
+.category-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+}
+
+.new-category {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.section-header {
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+.section .mat-form-field {
+  flex: 1 1 calc(50% - 10px);
+}
+
+.section.full-width .mat-form-field {
+  flex: 1 1 100%;
+}
+
+@media (max-width: 768px) {
+
+  .inp,
+  .section .mat-form-field {
+    flex: 1 1 100%;
   }
-  
+}

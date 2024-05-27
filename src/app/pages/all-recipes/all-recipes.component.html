@@ -10,63 +10,68 @@
 </div>
 <!-- <mat-paginator [length]="100" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page">
 </mat-paginator> -->
+<mat-paginator #paginator class="demo-paginator" (page)="handlePageEvent($event)" [length]="length"
+    [pageSize]="pageSize" [disabled]="disabled" [showFirstLastButtons]="showFirstLastButtons"
+    [pageSizeOptions]="showPageSizeOptions ? pageSizeOptions : []" [hidePageSize]="hidePageSize" [pageIndex]="pageIndex"
+    aria-label="Select page">
+</mat-paginator>
 <div class="flex-page">
-<div class="container">
-    <section class="section">
-        <span class="list-section">
-            <h3>סנן לפי</h3>
-        </span>
-        <mat-form-field class="example-full-width inp">
-            <mat-label>זמן הכנה:</mat-label>
-            <input type="number" (input)="searchRecipeByPreparationTime(preparationTime.value)" ngModel
-                #preparationTime="ngModel" matInput  value="">
-        </mat-form-field>
-        <span class="list-section">
-            <ul>
-                @for (subtask of task.subtasks; track subtask) {
-                <li>
-                    <mat-checkbox [(ngModel)]="subtask.completed" [color]="subtask.color"
-                        (ngModelChange)="updateAllComplete()">
-                        {{subtask.name}}
-                    </mat-checkbox>
-                </li>
-                }
-            </ul>
-        </span>
-    </section>
-</div>
-
-<div class="recipe-grid">
-    @for (r of recipes; track r._id) {
-    <mat-card (click)="showDetails(r._id)" class="recipe-card">
-        <mat-card-header>
-            <!-- <div mat-card-avatar class="example-header-image"></div> -->
-            <mat-card-title>{{r.name}}</mat-card-title>
-        </mat-card-header>
-        <img id="recipe-img" mat-card-image src={{r.image}} alt={{r.name}}>
-        <!-- <mat-card-content>
-      
-    </mat-card-content> -->
-        <mat-card-actions>
-            <div class="difficulty-rating">
-                <span class="rating-level" *ngFor="let level of [1, 2, 3, 4, 5] let i=index"
-                    [appDifficulty]="{ index: i, difficulty: r.difficulty }"></span>
-            </div>
-
-            <button mat-button>{{r.preparationTime|time}}</button>
-        </mat-card-actions>
-    </mat-card>
-    }
-    @empty {
-    <div class="not-found">
-        <img src="https://foody.co.il/app/themes/Foody/resources/images/empty-recipes.svg" alt="לא נמצאו תוצאות">
-        <h2>
-            לא נמצאו תוצאות <br>
-            <br>
-            אבל אולי יעניין אותך גם…
-        </h2>
+    <div class="container">
+        <section class="section">
+            <span class="list-section">
+                <h3>סנן לפי</h3>
+            </span>
+            <mat-form-field class="example-full-width inp">
+                <mat-label>זמן הכנה:</mat-label>
+                <input type="number" (input)="searchRecipeByPreparationTime(preparationTime.value)" ngModel
+                    #preparationTime="ngModel" matInput value="">
+            </mat-form-field>
+            <span class="list-section">
+                <ul>
+                    @for (subtask of task.subtasks; track subtask) {
+                    <li>
+                        <mat-checkbox [(ngModel)]="subtask.completed" [color]="subtask.color"
+                            (ngModelChange)="updateAllComplete()">
+                            {{subtask.name}}
+                        </mat-checkbox>
+                    </li>
+                    }
+                </ul>
+            </span>
+        </section>
     </div>
 
-    }
-</div>
+    <div class="recipe-grid">
+        @for (r of filteredRecipes; track r._id) {
+        <mat-card (click)="showDetails(r._id)" class="recipe-card">
+            <mat-card-header>
+                <!-- <div mat-card-avatar class="example-header-image"></div> -->
+                <mat-card-title>{{r.name}}</mat-card-title>
+            </mat-card-header>
+            <img id="recipe-img" mat-card-image src={{r.image}} alt={{r.name}}>
+            <!-- <mat-card-content>
+      
+    </mat-card-content> -->
+            <mat-card-actions>
+                <div class="difficulty-rating">
+                    <span class="rating-level" *ngFor="let level of [1, 2, 3, 4, 5] let i=index"
+                        [appDifficulty]="{ index: i, difficulty: r.difficulty }"></span>
+                </div>
+
+                <button mat-button>{{r.preparationTime|time}}</button>
+            </mat-card-actions>
+        </mat-card>
+        }
+        @empty {
+        <div class="not-found">
+            <img src="https://foody.co.il/app/themes/Foody/resources/images/empty-recipes.svg" alt="לא נמצאו תוצאות">
+            <h2>
+                לא נמצאו תוצאות <br>
+                <br>
+                אבל אולי יעניין אותך גם…
+            </h2>
+        </div>
+
+        }
+    </div>
 </div>

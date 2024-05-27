@@ -34,16 +34,19 @@
 <div class="recipe-details">
     <div class="recipe-header">
         <h2>{{ recipe?.name }}</h2>
-        <p>קטגוריה: {{ recipe?.categoryName }}</p>
+        <div *ngFor="let c of recipe?.categories">
+            <p>קטגוריה: {{c}}</p>
+        </div>
     </div>
     <div class="recipe-image">
-        <img  src="{{ recipe?.image }}" alt="{{ recipe?.name }}">
+        <img src="{{ recipe?.image }}" alt="{{ recipe?.name }}">
     </div>
     <div class="recipe-ingredients">
         <h3>רכיבים:</h3>
         <ul>
             <li *ngFor="let ingredient of recipe?.layers">
-                <span class="ingredient-icon">🥄</span> {{ ingredient?.description }}: {{ ingredient.ingredients.join(',') }}
+                <span class="ingredient-icon">🥄</span> {{ ingredient?.description }}: {{
+                ingredient.ingredients.join(',') }}
             </li>
         </ul>
     </div>
@@ -64,7 +67,7 @@
           <button class="arrow right" (click)="showNext()">&gt;</button>
         </div>
       </div> -->
-      
+
     <div class="recipe-actions">
         <button *ngIf="isOwner" mat-button>עריכה</button>
     </div>

@@ -1,8 +1,13 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { User } from '../models/user';
 import { Observable,catchError,map, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
+
+export interface SignResponse {
+  user: User;
+  token: string;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +31,7 @@ export class UsersService {
     }
   }
 
-  get users() {
+   allUsers() {
     return this.http.get<User[]>(this.usersURL)
   }
 
@@ -37,26 +42,8 @@ export class UsersService {
   signIn(email: string, password: string) {
     const user = { email: email, password: password };
     return this.http.post<{ user: User; token: string }>(this.usersURL + "signin/", user)
-    // .pipe(
-    //   map(response => {
-    //     return {
-    //       _id: response.user._id,
-    //       username: response.user.username,
-    //       email: response.user.email,
-    //       password: response.user.password,
-    //       address: response.user.address,
-    //       role: response.user.role,
-    //       // __v: response.user.__v
-    //     };
-      // }),
-    //   catchError(error => {
-    //     console.error(error); 
-    //     return throwError(error); 
-    //   })
-      
-    // );
   }
-  signUp(user: User): Observable<User> {
-    return this.http.post<User>(this.usersURL + "signup/", user)
+  signUp(user: User): Observable<HttpResponse<SignResponse>> {
+    return this.http.post<SignResponse>(this.usersURL + "signup/", user, { observe: 'response' });
   }
 }

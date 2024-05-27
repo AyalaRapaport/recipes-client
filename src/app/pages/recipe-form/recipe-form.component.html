@@ -1,47 +1,90 @@
 <form [formGroup]="recipeForm" (submit)="addRecipe()">
+  <div class="row">
+    <mat-form-field>
+      <mat-label>שם המתכון</mat-label>
+      <input formControlName="name" matInput>
+    </mat-form-field>
 
-  <mat-form-field>
-    <mat-label>שם המתכון</mat-label>
-    <input formControlName="recipeName" matInput>
-  </mat-form-field>
+    <mat-form-field>
+      <mat-label>תיאור </mat-label>
+      <textarea formControlName="description" matInput></textarea>
+      <!-- <input formControlName="description" matInput> -->
+    </mat-form-field>
+  </div>
 
-  <mat-form-field>
-    <mat-label>תיאור </mat-label>
-    <input formControlName="description" matInput>
-  </mat-form-field>
+  <div class="row">
+    <section class="section">
+      <mat-form-field>
+        <mat-label>קטגוריות</mat-label>
+        <mat-select (selectionChange)="onCategoryChange($event)" formControlName="categories" multiple>
+          <mat-option *ngFor="let c of categoryList " [value]="c.name">{{ c.name }}</mat-option>
+          <mat-option value="אחר">אחר</mat-option>
+        </mat-select>
+      </mat-form-field>
 
-  <section class="example-section">
+    </section>
+    <mat-form-field>
+      <mat-label>רמת קושי</mat-label>
+      <mat-select formControlName="difficulity">
+        <mat-option *ngFor="let d of difficulity; let i = index" [value]="i + 1">{{ d }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <mat-accordion *ngIf="showNewCategoryInput" class="example-headers-align" multi>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>קטגוריות חדשות </mat-panel-title>
+        <mat-panel-description>
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      <div formArrayName="newCategories">
+        <div *ngFor="let c of newCategories.controls; let i = index">
+          <mat-form-field [formGroupName]="i">
+            <mat-label>{{ i + 1 }}</mat-label>
+            <input formControlName="name" matInput (input)="onCategoriesInput(i)">
+          </mat-form-field>
+        </div>
+        <button *ngIf="showNewCategoryInput" mat-button (click)="addNewCategory()">אישור</button>
+      </div>
+    </mat-expansion-panel>
+  </mat-accordion>
+
+  <section class="example-section full-width">
     <label class="example-margin">האם פרטי:</label>
-    <mat-radio-group [(ngModel)]="labelPosition">
+    <mat-radio-group formControlName="isPrivate">
       <mat-radio-button class="example-margin" value="לא">לא</mat-radio-button>
       <mat-radio-button class="example-margin" value="כן">כן</mat-radio-button>
     </mat-radio-group>
   </section>
+  <div class="section-header">זמן הכנה</div>
 
-  <mat-form-field formArrayName="categories">
-    <mat-label>קטגוריות</mat-label>
-    <mat-select [(value)]="selectedCategories" multiple>
-      <mat-option *ngFor="let c of categoryList" [value]="c.name">{{c.name}}</mat-option>
-    </mat-select>
-  </mat-form-field>
+  <section class="section">
+    <mat-form-field class="inp">
+      <mat-label>שעות:</mat-label>
+      <input formControlName="preparationHours" type="number" value="0" min="0" matInput>
+    </mat-form-field>
+    <mat-form-field class="inp">
+      <mat-label>דקות:</mat-label>
+      <input formControlName="preparationMinutes" type="number" matInput value="0" min="0">
+    </mat-form-field>
+  </section>
+
   <mat-accordion class="example-headers-align" multi>
     <mat-expansion-panel>
       <mat-expansion-panel-header>
         <mat-panel-title>מרכיבים </mat-panel-title>
         <mat-panel-description>
           <mat-icon>restaurant_menu</mat-icon>
-          <!-- <mat-icon>fastfood</mat-icon>
-          <mat-icon>kitchen</mat-icon>
-          <mat-icon>local_grocery_store</mat-icon>
-          <mat-icon>restaurant</mat-icon> -->
         </mat-panel-description>
       </mat-expansion-panel-header>
       <div formArrayName="ingredients">
         <div *ngFor="let ingredient of ingredients.controls; let i = index">
           <mat-form-field [formGroupName]="i">
-            <mat-label>{{i+1}}</mat-label>
+            <mat-label>{{ i + 1 }}</mat-label>
             <input formControlName="name" matInput (input)="onIngredientInput(i)">
           </mat-form-field>
+          
         </div>
       </div>
     </mat-expansion-panel>
@@ -55,17 +98,22 @@
           <mat-icon>list</mat-icon>
         </mat-panel-description>
       </mat-expansion-panel-header>
-      <div formArrayName="instructions">
+      <div formArrayName="preparationInstructions">
         <div *ngFor="let instruction of instructions.controls; let i = index">
           <mat-form-field [formGroupName]="i">
-            <mat-label>{{i+1}}</mat-label>
+            <mat-label>{{ i + 1 }}</mat-label>
             <input formControlName="step" matInput (input)="onInstructionInput(i)">
           </mat-form-field>
         </div>
       </div>
     </mat-expansion-panel>
   </mat-accordion>
+  <mat-form-field>
+    <mat-label>קישור לתמונה</mat-label>
+    <input formControlName="image" matInput>
+  </mat-form-field>
   <button type="submit" mat-flat-button color="warn">הוסף מתכון</button>
+  <div *ngIf="recipeForm.invalid">הטופס אינו תקין</div>
 
-  <!-- <button mat-button matTooltip="Warn" color="warn" type="submit" mat-button color="warn">הוסף מתכון</button> -->
+  <div>{{ recipeForm.status === 'INVALID' }}</div>
 </form>

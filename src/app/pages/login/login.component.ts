@@ -41,7 +41,7 @@ export class LoginComponent {
     try {
       const user = await this.userService.signIn(email, password).toPromise();
       if (user?.user.email) {
-        this.authService.login(user.user);
+        this.authService.login(user);
         this.router.navigateByUrl("allrecipes");
         this.userService.token = user.token;
       } else {

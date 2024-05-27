@@ -30,7 +30,8 @@
         <li class="nav-item">
           <a class="nav-link" routerLink="" routerLinkActive="active">דף הבית</a>
         </li>
-        <li class="nav-item">
+        <!-- *ngIf="isLoggedIn()" -->
+        <li  class="nav-item">
           <a class="nav-link" routerLink="allrecipes" routerLinkActive="active">מתכונים</a>
         </li>
         <li class="nav-item">
@@ -43,7 +44,9 @@
         <li  class="nav-item">
           <a class="nav-link" routerLink="recipe-form" routerLinkActive="active">הוסף מתכון</a>
         </li>
-        
+        <li  class="nav-item">
+          <a class="nav-link" routerLink="allusers" routerLinkActive="active">רשימת משתמשים </a>
+        </li>
       </ul>
     </div>
   </div>

@@ -11,7 +11,7 @@ import { AuthService } from '../../shared/services/auth.service';
 import { FormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { ThemePalette } from '@angular/material/core';
-import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 
@@ -31,20 +31,35 @@ export interface Task {
 })
 export class AllRecipesComponent {
 
-
   constructor(private recipeService: RecipesService, private router: Router, private authService: AuthService) { }
+
+  recipes: Recipe[] = [];
+  filteredRecipes: Recipe[] = []
+
+  pageSize = 10;
+  pageIndex = 0;
+  pageSizeOptions = [6, 10, 16];
+  pageEvent: PageEvent | undefined;
+  length = 0
+
+  hidePageSize = false;
+  showPageSizeOptions = true;
+  showFirstLastButtons = true;
+  disabled = false;
+
+  recipeId: number = 0
+  preparationTime: number = 0;
+  allComplete: boolean = false;
 
   ngOnInit() {
     this.recipeService.getAllRecipes().subscribe(data => {
       this.recipes = data
-      console.log(this.recipes)
+      // length =data.length;
+      this.length = data.length;
+      this.filteredRecipes = this.recipes.slice((this.pageIndex) * this.pageSize, (this.pageIndex + 1) * this.pageSize)
     });
   }
-
-  recipeId: number = 0
-  recipes: Recipe[] = [];
-  preparationTime: number = 0;
-
+  
   task: Task = {
     name: 'סנן לפי',
     completed: false,
@@ -56,13 +71,26 @@ export class AllRecipesComponent {
     ],
   };
 
-  allComplete: boolean = false;
-
   searchRecipeByPreparationTime(time: number) {
     this.recipeService.getRecipesByPreparationTime(time).subscribe(data => {
       this.recipes = data;
     });
   }
+
+  handlePageEvent(e: PageEvent) {
+    this.pageEvent = e;
+    this.length = e.length;
+    this.pageSize = e.pageSize;
+    this.pageIndex = e.pageIndex;
+    this.filteredRecipes = this.recipes.slice((this.pageIndex) * this.pageSize, (this.pageIndex + 1) * this.pageSize)
+
+  }
+
+  // updateFilteredRecipes() {
+  //   const start = this.pageIndex * this.pageSize;
+  //   const end = start + this.pageSize;
+  //   this.filteredRecipes = this.recipes.slice(start, end);
+  // }
 
   updateAllComplete() {
     this.allComplete = this.task.subtasks != null && this.task.subtasks.every(t => t.completed);
@@ -109,7 +137,7 @@ export class AllRecipesComponent {
   }
 
   filterMyRecipe() {
-    this.recipeService.getRecipesByUserId(this.authService.currentUser?._id).subscribe(data => { this.recipes = data }
+    this.recipeService.getRecipesByUserId(this.authService.currentUser?._id).subscribe(data => { this.filteredRecipes = data }
     )
   }
 

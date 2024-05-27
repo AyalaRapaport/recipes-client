@@ -1,30 +1,38 @@
 import { Injectable } from '@angular/core';
 import { User } from '../models/user';
 import { BehaviorSubject } from 'rxjs';
+import { SignResponse } from './users.service';
+import { Token } from '@angular/compiler';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private currentUserSubject = new BehaviorSubject<User | undefined>(undefined);
-  currentUser$ = this.currentUserSubject.asObservable();
-  currentUser: User | undefined
-  isLoggedIn: boolean = false
-  getIsLoggedIn(): boolean {
-    return this.isLoggedIn;
-  }
+
   constructor() {
     this.loadFromLocalStorage();
   }
 
-  login(user: User): void {
-    this.currentUser = user;
+  private currentUserSubject = new BehaviorSubject<User | undefined>(undefined);
+  currentUser$ = this.currentUserSubject.asObservable();
+  currentUser: User | undefined
+  currentToken:string|undefined
+  isLoggedIn: boolean = false
+  
+  getIsLoggedIn(): boolean {
+    return this.isLoggedIn;
+  }
+
+  login(res: SignResponse) {
+    this.currentUser = res.user;
     this.isLoggedIn = true;
+    this.currentToken=res.token;
     this.saveToLocalStorage();
   }
 
-  logout(): void {
+  logout() {
     this.currentUser = undefined;
+    this.currentToken=undefined;
     this.isLoggedIn = false;
     this.clearLocalStorage();
   }

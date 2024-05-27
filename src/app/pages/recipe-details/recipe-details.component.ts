@@ -7,7 +7,6 @@ import { TimePipe } from '../../shared/pipes/time.pipe';
 import { Difficulty } from '../../shared/difficulty';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../shared/services/auth.service';
-import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-recipe-details',
