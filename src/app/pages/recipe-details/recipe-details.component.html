@@ -34,6 +34,7 @@
 <div class="recipe-details">
     <div class="recipe-header">
         <h2>{{ recipe?.name }}</h2>
+        <h3>{{recipe?.description}}</h3>
         <div *ngFor="let c of recipe?.categories">
             <p>קטגוריה: {{c}}</p>
         </div>
@@ -41,7 +42,7 @@
     <div class="recipe-image">
         <img src="{{ recipe?.image }}" alt="{{ recipe?.name }}">
     </div>
-    <div class="recipe-ingredients">
+    <!-- <div class="recipe-ingredients">
         <h3>רכיבים:</h3>
         <ul>
             <li *ngFor="let ingredient of recipe?.layers">
@@ -49,10 +50,25 @@
                 ingredient.ingredients.join(',') }}
             </li>
         </ul>
+    </div> -->
+    <div class="recipe-ingredients">
+        <h3>רכיבים:</h3>
+        <ul>
+            <li *ngFor="let layer of recipe?.layers">
+                <strong>{{ layer?.description }}:</strong>
+                <ul>
+                    <li *ngFor="let ingredient of layer?.ingredients">
+                        <span class="ingredient-icon">🥄</span> {{ ingredient }}
+                    </li>
+                </ul>
+            </li>
+        </ul>
     </div>
     <div class="recipe-instructions">
         <h3>אופן ההכנה:</h3>
-        <p>{{ recipe?.preparationInstructions }}</p>
+        <div *ngFor="let instruction of recipe?.preparationInstructions; let i = index">
+            <p>{{ i + 1 }}. {{ instruction }}</p>
+        </div>
     </div>
     <!-- <div class="gallery-container">
         <div class="gallery">
@@ -69,7 +85,8 @@
       </div> -->
 
     <div class="recipe-actions">
-        <button *ngIf="isOwner" mat-button>עריכה</button>
+        <button (click)="updateRecipe()" *ngIf="isOwner" mat-button>עריכה</button>
+        <button (click)="deleteRecipe()"  mat-button>מחיקה</button>
     </div>
 
 </div>

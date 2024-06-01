@@ -1,7 +1,7 @@
 <form #loginForm="ngForm">
   <mat-form-field>
     <mat-label>אימייל </mat-label>
-    <input #email type="text" matInput [formControl]="emailFormControl" [errorStateMatcher]="matcher"
+    <input [(ngModel)]="emailV" #email type="text" matInput [formControl]="emailFormControl" [errorStateMatcher]="matcher"
       placeholder="Ex. pat@example.com">
     <mat-error *ngIf="emailFormControl.hasError('required')"> <strong>שדה חובה</strong></mat-error>
     <mat-error *ngIf="emailFormControl.hasError('email')"> כתובת אימייל אינה תקינה </mat-error>

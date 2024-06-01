@@ -14,6 +14,7 @@ import { ThemePalette } from '@angular/material/core';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
+import { NgxSpinnerModule, NgxSpinnerService } from "ngx-spinner";
 
 export interface Task {
   name: string;
@@ -25,16 +26,17 @@ export interface Task {
 @Component({
   selector: 'app-all-recipes',
   standalone: true,
-  imports: [MatButtonModule, MatCardModule, TimePipe, NgClass, DifficultyDirective, CommonModule, FormsModule, MatCheckboxModule, MatPaginatorModule, MatInputModule, MatIconModule,],
+  imports: [NgxSpinnerModule, MatButtonModule, MatCardModule, TimePipe, NgClass, DifficultyDirective, CommonModule, FormsModule, MatCheckboxModule, MatPaginatorModule, MatInputModule, MatIconModule,],
   templateUrl: './all-recipes.component.html',
   styleUrl: './all-recipes.component.scss'
 })
 export class AllRecipesComponent {
 
-  constructor(private recipeService: RecipesService, private router: Router, private authService: AuthService) { }
+  constructor(private recipeService: RecipesService, private spinner: NgxSpinnerService, private router: Router, private authService: AuthService) { }
 
   recipes: Recipe[] = [];
   filteredRecipes: Recipe[] = []
+  isLoading: boolean = true;
 
   pageSize = 10;
   pageIndex = 0;
@@ -47,19 +49,21 @@ export class AllRecipesComponent {
   showFirstLastButtons = true;
   disabled = false;
 
-  recipeId: number = 0
+  recipeId: string = ''
   preparationTime: number = 0;
   allComplete: boolean = false;
 
   ngOnInit() {
+    this.spinner.show();
     this.recipeService.getAllRecipes().subscribe(data => {
       this.recipes = data
-      // length =data.length;
       this.length = data.length;
       this.filteredRecipes = this.recipes.slice((this.pageIndex) * this.pageSize, (this.pageIndex + 1) * this.pageSize)
+      // this.spinner.hide();
+      this.isLoading = false
     });
   }
-  
+
   task: Task = {
     name: 'סנן לפי',
     completed: false,
@@ -83,14 +87,19 @@ export class AllRecipesComponent {
     this.pageSize = e.pageSize;
     this.pageIndex = e.pageIndex;
     this.filteredRecipes = this.recipes.slice((this.pageIndex) * this.pageSize, (this.pageIndex + 1) * this.pageSize)
+    // const myRecipesTask = this.task.subtasks?.find(t => t.name === 'מתכונים שלי');
 
+    // if (myRecipesTask?.completed) {
+    //   // Fetch only user's recipes if "מתכונים שלי" is selected
+    //   this.filterMyRecipe();
+    // } else {
+    //   // Fetch all recipes if "מתכונים שלי" is not selected
+    //   this.recipeService.getAllRecipes().subscribe(data => {
+    //     this.recipes = data;
+    //     this.filteredRecipes = this.recipes.slice((this.pageIndex) * this.pageSize, (this.pageIndex + 1) * this.pageSize);
+    //   });
+    // }
   }
-
-  // updateFilteredRecipes() {
-  //   const start = this.pageIndex * this.pageSize;
-  //   const end = start + this.pageSize;
-  //   this.filteredRecipes = this.recipes.slice(start, end);
-  // }
 
   updateAllComplete() {
     this.allComplete = this.task.subtasks != null && this.task.subtasks.every(t => t.completed);
@@ -100,7 +109,7 @@ export class AllRecipesComponent {
     } else {
       // Optionally, fetch all recipes if "מתכונים שלי" is not selected
       this.recipeService.getAllRecipes().subscribe(data => {
-        this.recipes = data;
+        this.filteredRecipes = data;
       });
     }
   }
@@ -122,7 +131,7 @@ export class AllRecipesComponent {
 
   applyFilter(filterValue: any) {
     this.recipeService.getAllRecipes(filterValue.value).subscribe(data => {
-      this.recipes = data
+      this.filteredRecipes = data
     });
   }
 
@@ -131,7 +140,7 @@ export class AllRecipesComponent {
     this.applyFilter('');
   }
 
-  showDetails(id: number) {
+  showDetails(id: string) {
     this.recipeId = id;
     this.router.navigateByUrl(`recipeDetails/${this.recipeId}`);
   }

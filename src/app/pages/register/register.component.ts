@@ -40,7 +40,6 @@ export class RegisterComponent {
       this.emailV = state.details.email;
       this.password = state.details.password;
       console.log(this.emailV);
-
     }
   }
   passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d).{4,}$/;

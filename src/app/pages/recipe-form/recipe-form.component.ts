@@ -1,6 +1,6 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, FormatWidth } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -15,6 +15,7 @@ import { FormsModule } from '@angular/forms';
 import { Recipe } from '../../shared/models/recipe';
 import { AuthService } from '../../shared/services/auth.service';
 import { RecipesService } from '../../shared/services/recipes.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-recipe-form',
@@ -31,8 +32,10 @@ export class RecipeFormComponent {
   // newCategoryName: string = '';
   isNewCategoryChecked = false;
   newCategoryName = '';
+  recipeId: string | null = null
+  isUpdateMode: boolean = false
 
-  constructor(private recipeService: RecipesService, private fb: FormBuilder, private categoryService: CategoriesService, private authService: AuthService) {
+  constructor(private recipeService: RecipesService, private route: ActivatedRoute, private fb: FormBuilder, private categoryService: CategoriesService, private authService: AuthService) {
 
     categoryService.getCategories().subscribe(x => this.categoryList = x);
 
@@ -47,10 +50,48 @@ export class RecipeFormComponent {
       image: fb.control(''),
       categories: fb.control([]),
       newCategories: fb.array([this.createCategory()]),
-      // newCategories: this.fb.array([this.fb.control('')]),
       ingredients: fb.array([this.createIngredient()]),
+      layers: fb.array([this.createLayer()]),
       preparationInstructions: fb.array([this.createInstruction()])
     })
+    this.recipeId = this.route.snapshot.paramMap.get('id');
+    if (this.recipeId) {
+      this.isUpdateMode = true;
+      this.loadRecipeData();
+    }
+  }
+
+  loadRecipeData() {
+    this.recipeService.getRecipeById(this.recipeId).subscribe(recipe => {
+      this.recipeForm.patchValue({
+        name: recipe?.name,
+        description: recipe?.description,
+        difficulity: recipe?.difficulty,
+        preparationTime: recipe?.preparationTime,
+        preparationHours: Math.floor(recipe?.preparationTime ? recipe.preparationTime / 60 : 0),
+        preparationMinutes: recipe?.preparationTime ? recipe.preparationTime % 60 : 0,
+        isPrivate: recipe.isPrivate ? 'כן' : 'לא',
+        image: recipe?.image[0],
+        categories: recipe?.categories
+      });
+
+      const ingredients = this.recipeForm.get('ingredients') as FormArray;
+      if (recipe.ingredients) {
+        recipe.ingredients.forEach(ingredient => {
+          ingredients.push(this.fb.group({ name: ingredient }));
+        });
+      }
+
+      const preparationInstructions = this.recipeForm.get('preparationInstructions') as FormArray;
+      while (preparationInstructions.length !== 0) {
+        preparationInstructions.removeAt(0);
+      }
+      if (recipe.preparationInstructions) {
+        recipe.preparationInstructions.forEach(instruction => {
+          preparationInstructions.push(this.fb.group({ step: instruction }));
+        });
+      }
+    });
   }
 
   updateCategories(selectedCategories: string[]): void {
@@ -79,7 +120,7 @@ export class RecipeFormComponent {
         recipes: []
       });
     }
-  
+
     currentCategories.push(this.newCategoryName);
     this.recipeForm.get('categories')?.setValue(currentCategories);
     this.showNewCategoryInput = false;
@@ -87,28 +128,52 @@ export class RecipeFormComponent {
     const otherIndex = currentCategories.indexOf('אחר');
     if (otherIndex > -1) {
       currentCategories.splice(otherIndex, 1);
-    }  
+    }
     currentCategories.pop();
     // Set the updated categories array to the categories form control
     this.recipeForm.get('categories')?.setValue(currentCategories);
   }
 
-  get ingredients(): FormArray {
-    return this.recipeForm.get('ingredients') as FormArray;
-  }
+  // get ingredients(): FormArray {
+  //   return this.recipeForm.get('ingredients') as FormArray;
+  // }
 
   get instructions(): FormArray {
     return this.recipeForm.get('preparationInstructions') as FormArray;
   }
 
+  get layers(): FormArray {
+    return this.recipeForm.get('layers') as FormArray
+  }
   get newCategories(): FormArray {
     return this.recipeForm.get('newCategories') as FormArray;
+  }
+
+  getIngredientsArray(layer: AbstractControl): FormArray {
+    return layer.get('ingredients') as FormArray;
+  }
+
+  // updateIngredients() {
+  //   this.layers.controls.forEach((layer, index) => {
+  //     this.layerIngredients[index] = this.getIngredientsArray(layer);
+  //   });
+  // }
+
+  getIngredients(layer: AbstractControl): FormArray {
+    return layer.get('ingredients') as FormArray;
   }
 
   createIngredient(): FormGroup {
     return this.fb.group({
       name: ''
     });
+  }
+
+  createLayer(): FormGroup {
+    return this.fb.group({
+      description: ['', Validators.required],
+      ingredients: this.fb.array([this.createIngredient()])
+    })
   }
 
   createInstruction(): FormGroup {
@@ -123,16 +188,36 @@ export class RecipeFormComponent {
     });
   }
 
-  
+  addLayer() {
+    this.layers.push(this.createLayer());
+  }
 
-  onIngredientInput(index: number) {
-    const control = this.ingredients.at(index);
-    if (control.value.name.trim().length === 0 && index !== this.ingredients.length - 1) {
-      this.ingredients.removeAt(index);
-    } else if (control.value.name.trim().length > 0 && index === this.ingredients.length - 1) {
-      this.ingredients.push(this.createIngredient());
+  removeLayer(index: number) {
+    this.layers.removeAt(index);
+  }
+
+  // onIngredientInput(index: number) {
+  //   const control = this.ingredients.at(index);
+  //   if (control.value.name && index === this.ingredients.length - 1) {
+  //     this.ingredients.push(this.createIngredient);
+  //     console.log(this.ingredients);
+
+  //   } else if (!control.value.name && index !== this.ingredients.length - 1) {
+  //     this.ingredients.removeAt(index);
+  //   }
+  // }
+
+  onIngredientInput(layerIndex: number, ingredientIndex: number) {
+    const layersArray = this.layers.at(layerIndex).get('ingredients') as FormArray;
+    const control = layersArray.at(ingredientIndex);
+
+    if (control.value.name && ingredientIndex === layersArray.length - 1) {
+      layersArray.push(this.createIngredient());
+    } else if (!control.value.name && ingredientIndex !== layersArray.length - 1) {
+      layersArray.removeAt(ingredientIndex);
     }
   }
+
 
   onInstructionInput(index: number) {
     const control = this.instructions.at(index);
@@ -153,20 +238,27 @@ export class RecipeFormComponent {
   }
 
   addRecipe() {
-    const hours = this.recipeForm.get('preparationHours')?.value;
-    const minutes = this.recipeForm.get('preparationMinutes')?.value;
-    const totalPreparationTime = (hours * 60) + minutes;
-    const recipe = this.recipeForm.value;
-    const user = { _id: this.authService.currentUser?._id, name: this.authService.currentUser?.username }
-    this.recipeForm.patchValue({ preparationTime: totalPreparationTime });
-    console.log(this.recipeForm);
-    console.log(this.recipeForm.status == 'INVALID');
-    console.log(this.recipeForm.status);
-    const newRecipe = new Recipe(0, recipe.name, recipe.description, recipe.categories,
-      totalPreparationTime, recipe.difficulity, recipe.ingredients, recipe.preparationInstructions,
-      user, recipe.image, undefined)
-    console.log(newRecipe);
+    if (!this.isUpdateMode) {
+      let recipe = this.recipeForm.value;
+      const user = { _id: this.authService.currentUser?._id, name: this.authService.currentUser?.username }
+      recipe.user = user;
+      // this.recipeForm.patchValue({ preparationTime: totalPreparationTime });
+      // const newRecipe = new Recipe('', recipe.name, recipe.description, recipe.categories,
+      //   totalPreparationTime, recipe.difficulity, recipe.ingredients, recipe.preparationInstructions,
+      //   user, recipe.image, recipe.isPrivate, undefined)
+      // console.log(newRecipe);
 
-    this.recipeService.addRecipe(newRecipe);
+      console.log(recipe);
+      debugger
+      this.recipeService.addRecipe(recipe);
+    }
+  }
+  updateRecipe() {
+    let recipe = this.recipeForm.value;
+    const user = { _id: this.authService.currentUser?._id, name: this.authService.currentUser?.username }
+    recipe.user = user;
+    recipe._id = this.recipeId;
+    console.log(recipe);
+    this.recipeService.updateRecipe(recipe);
   }
 }

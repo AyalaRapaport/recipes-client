@@ -13,11 +13,13 @@
 <mat-card class="profile-container" *ngIf="showProfile">
   <button (click)="isShowProfile()" class="close-button">×</button>
   <mat-card-content class="profile-details">
-    <div mat-card-avatar class="avatar"></div>
+    <div mat-card-avatar class="avatar">
+      <p class="letter">{{ getFirst()|uppercase}}</p>
+    </div>
     <p>שם משתמש:{{ getUser()?.username }}</p>
     <p>כתובת:{{ getUser()?.address }}</p>
     <p>אימייל:{{ getUser()?.email }}</p>
-    <img class="logOut" (click)="logOut()" src="../assets/images/exit.png" alt="log out"/>
+    <img class="logOut" (click)="logOut()" src="../assets/images/exit.png" alt="log out" />
   </mat-card-content>
 </mat-card>
 
@@ -28,10 +30,10 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ml-auto">
         <li class="nav-item">
-          <a class="nav-link" routerLink="" routerLinkActive="active">דף הבית</a>
+          <a class="nav-link" routerLink="">דף הבית</a>
         </li>
-        <!-- *ngIf="isLoggedIn()" -->
-        <li  class="nav-item">
+
+        <li *ngIf="isToken" class="nav-item">
           <a class="nav-link" routerLink="allrecipes" routerLinkActive="active">מתכונים</a>
         </li>
         <li class="nav-item">
@@ -40,11 +42,12 @@
         <li class="nav-item">
           <a class="nav-link" routerLink="register" routerLinkActive="active">הרשמה</a>
         </li>
-        <!-- *ngIf="isLoggedIn()" -->
-        <li  class="nav-item">
+        
+        <li *ngIf="isToken" class="nav-item">
           <a class="nav-link" routerLink="recipe-form" routerLinkActive="active">הוסף מתכון</a>
         </li>
-        <li  class="nav-item">
+        
+        <li *ngIf="isManager" class="nav-item">
           <a class="nav-link" routerLink="allusers" routerLinkActive="active">רשימת משתמשים </a>
         </li>
       </ul>

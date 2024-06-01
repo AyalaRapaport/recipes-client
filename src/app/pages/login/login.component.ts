@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
@@ -28,14 +28,22 @@ const USERNAME_REGEX = /^[a-zA-Zא-ת\s]{2,}$/;
   imports: [MatIconModule, MatButtonModule, CommonModule, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, RegisterComponent]
 })
 
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   hide = true;
   passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d).{4,}$/;
   emailFormControl = new FormControl('', [Validators.required, Validators.email]);
   passwordFormControl = new FormControl('', [Validators.required, Validators.minLength(4), Validators.pattern(this.passwordRegex)])
   matcher = new MyErrorStateMatcher();
+  emailV: string = ''
 
   constructor(private router: Router, private userService: UsersService, private authService: AuthService) { }
+
+  ngOnInit(): void {
+    const state = history.state;
+    if (state && state.email) {
+      this.emailV = state.email;
+    }
+  }
 
   async login(email: string, password: string) {
     try {

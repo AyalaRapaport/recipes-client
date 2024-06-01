@@ -3,16 +3,18 @@ import { Layer } from "./layer";
 import { User } from "./user";
 
 export class Recipe {
-    constructor(public _id: number,
+    constructor(
+        public _id: string,
         public name: string,
         public description: number,
-        public categories:string[],
+        public categories: string[],
         public preparationTime: number,
         public difficulty: Difficulty,
         public ingredients: string[],
         public preparationInstructions: string[],
-        public addedBy: User|undefined,
+        public addedBy: User | undefined,
         public image: string,
-        public layers:Layer[]|undefined
+        public isPrivate:boolean,
+        public layers: Layer[] | undefined,
     ) { }
 }

@@ -1,3 +1,9 @@
+<div *ngIf="isLoading">
+    <!-- <ngx-spinner bdColor="rgba(0, 0, 0, 0.8)" size="medium" color="#fff" type="ball-atom"></ngx-spinner> -->
+    <ngx-spinner></ngx-spinner>
+    <div class="spinner"></div>
+  </div>
+
 <div class="search-box">
     <mat-form-field appearance="outline">
         <mat-label>חפש מתכון</mat-label>
@@ -41,7 +47,7 @@
         </section>
     </div>
 
-    <div class="recipe-grid">
+    <div *ngIf="!isLoading" class="recipe-grid">
         @for (r of filteredRecipes; track r._id) {
         <mat-card (click)="showDetails(r._id)" class="recipe-card">
             <mat-card-header>
