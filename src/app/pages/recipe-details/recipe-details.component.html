@@ -40,17 +40,9 @@
         </div>
     </div>
     <div class="recipe-image">
-        <img src="{{ recipe?.image }}" alt="{{ recipe?.name }}">
+        <img src="{{ recipe?.imageUrl }}" alt="{{ recipe?.name }}">
     </div>
-    <!-- <div class="recipe-ingredients">
-        <h3>רכיבים:</h3>
-        <ul>
-            <li *ngFor="let ingredient of recipe?.layers">
-                <span class="ingredient-icon">🥄</span> {{ ingredient?.description }}: {{
-                ingredient.ingredients.join(',') }}
-            </li>
-        </ul>
-    </div> -->
+    
     <div class="recipe-ingredients">
         <h3>רכיבים:</h3>
         <ul>

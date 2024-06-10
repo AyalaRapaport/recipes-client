@@ -1,0 +1,17 @@
+<div class="background">
+    <div *ngIf="isLoaded" class="slideshow-container">
+      <div *ngFor="let slideGroup of slideGroups; let i = index" class="mySlides fade">
+        <div class="numbertext">{{i + 1}} / {{slideGroups.length}}</div>
+        <div class="slide-images">
+          <img (click)="getRecipeDetails(r._id)" *ngFor="let r of slideGroup" alt="{{r.name}}" src="{{r.imageUrl}}" class="imageRecipe">
+        </div>
+      </div>
+      <a class="prev" (click)="plusSlides(-1)">&#10094;</a>
+      <a class="next" (click)="plusSlides(1)">&#10095;</a>
+    </div>
+    <br>
+    <!-- <div style="text-align:center">
+      <span *ngFor="let slide of slideGroups; let i = index" class="dot" (click)="currentSlide(i + 1)"></span>
+    </div> -->
+  </div>
+  

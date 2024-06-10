@@ -29,7 +29,7 @@ export class AllUsersComponent implements OnInit {
         users => {
           console.log(users);
           if (!users.length) {
-
+            debugger
             this._snackBar.open('עליך לבצע התחברות מחדש', 'כניסה', {
               verticalPosition: 'top',
             }).onAction().subscribe(() => {

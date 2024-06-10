@@ -25,13 +25,18 @@
     </div>
 
     <div class="row">
-        <mat-form-field class="field">
-            <mat-label>אימייל</mat-label>
-            <input [(ngModel)]="emailV" #email type="email" matInput [formControl]="emailFormControl" [errorStateMatcher]="matcher"
-                placeholder="Ex. pat@example.com">
+        <mat-form-field>
+            <mat-label>אימייל </mat-label>
+            <input [(ngModel)]="emailV" #email type="text" matInput [formControl]="emailFormControl" [errorStateMatcher]="matcher"
+              placeholder="Ex. pat@example.com" [matAutocomplete]="auto">
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onOptionSelected($event)">
+              <mat-option *ngFor="let domain of filteredDomains" [value]="emailV.split('@')[0] + '@' + domain">
+                {{ emailV.split('@')[0] + '@' + domain }}
+              </mat-option>
+            </mat-autocomplete>
             <mat-error *ngIf="emailFormControl.hasError('required')"> <strong>שדה חובה</strong></mat-error>
             <mat-error *ngIf="emailFormControl.hasError('email')"> כתובת אימייל אינה תקינה </mat-error>
-        </mat-form-field>
+          </mat-form-field>
 
         <mat-form-field class="field">
             <mat-label>כתובת</mat-label>

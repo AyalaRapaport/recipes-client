@@ -3,6 +3,8 @@ import { authGuard } from './shared/guards/auth.guard';
 import { isManagerGuard } from './shared/guards/isManager.guard copy';
 
 export const routes: Routes = [
+     { path: 'homepage', loadComponent: () => import('./pages/homepage/homepage.component').then(c => c.HomepageComponent), pathMatch: 'full' },
+     { path: '', loadComponent: () => import('./pages/homepage/homepage.component').then(c => c.HomepageComponent), pathMatch: 'full' },
      { path: 'login', loadComponent: () => import('./pages/login/login.component').then(c => c.LoginComponent), pathMatch: 'full' },
      { path: 'allrecipes', canActivate: [authGuard], loadComponent: () => import('./pages/all-recipes/all-recipes.component').then(c => c.AllRecipesComponent) },
      { path: 'register', loadComponent: () => import('./pages/register/register.component').then(c => c.RegisterComponent) },

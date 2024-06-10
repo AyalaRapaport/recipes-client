@@ -37,6 +37,21 @@ mat-form-field {
   justify-content: space-between;
 }
 
+.image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1em; 
+}
+
+.selected-image {
+  width: 40%; 
+  max-width: 500px; 
+  height: auto; 
+}
+
+
+
 .section {
   display: flex;
   flex-wrap: wrap;

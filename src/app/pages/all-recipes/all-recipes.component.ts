@@ -15,7 +15,10 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { NgxSpinnerModule, NgxSpinnerService } from "ngx-spinner";
-
+import { Category } from '../../shared/models/category';
+import { CategoriesService } from '../../shared/services/categories.service';
+import { Difficulty } from '../../shared/difficulty';
+//ג122
 export interface Task {
   name: string;
   completed: boolean;
@@ -32,12 +35,19 @@ export interface Task {
 })
 export class AllRecipesComponent {
 
-  constructor(private recipeService: RecipesService, private spinner: NgxSpinnerService, private router: Router, private authService: AuthService) { }
+  constructor(private recipeService: RecipesService, private categoryService: CategoriesService, private spinner: NgxSpinnerService, private router: Router, private authService: AuthService) { }
 
   recipes: Recipe[] = [];
   filteredRecipes: Recipe[] = []
+  categories: Category[] = []
   isLoading: boolean = true;
-
+  task!: Task
+  selectedCategories: string[] = []
+  selectedDifficulties: string[] = []
+  isFilterMyRecipes: boolean = false;
+  myPrivateRecipes: Recipe[] = []
+  filterBySearch: boolean = false;
+  searchValue: string = ''
   pageSize = 10;
   pageIndex = 0;
   pageSizeOptions = [6, 10, 16];
@@ -55,25 +65,51 @@ export class AllRecipesComponent {
 
   ngOnInit() {
     this.spinner.show();
-    this.recipeService.getAllRecipes().subscribe(data => {
-      this.recipes = data
-      this.length = data.length;
-      this.filteredRecipes = this.recipes.slice((this.pageIndex) * this.pageSize, (this.pageIndex + 1) * this.pageSize)
-      // this.spinner.hide();
-      this.isLoading = false
+
+    const difficultyLevels: string[] = Object.values(Difficulty)
+      .map(value => typeof value === 'string' ? value : undefined)
+      .filter(value => value !== undefined) as string[];
+
+    this.categoryService.getCategories().subscribe(categories => {
+      this.categories = categories;
+      this.task = {
+        name: 'סנן לפי',
+        completed: false,
+        color: 'primary',
+        subtasks: [
+          { name: 'מתכונים שלי', completed: false, color: 'primary' },
+          {
+            name: 'קטגוריות',
+            completed: false,
+            color: 'primary',
+            subtasks: this.categories.map(category => ({
+              name: category.name,
+              completed: false,
+              color: 'primary'
+            }))
+          },
+          {
+            name: 'רמת קושי',
+            completed: false,
+            color: 'primary',
+            subtasks: difficultyLevels.map(diff => ({
+              name: diff,
+              completed: false,
+              color: 'primary'
+            }))
+          }
+        ]
+      };
+
+      this.recipeService.getAllRecipes().subscribe(data => {
+        this.recipes = data;
+        this.length = data.length;
+        this.filterRecipes();
+        // this.filteredRecipes = this.recipes.slice((this.pageIndex) * this.pageSize, (this.pageIndex + 1) * this.pageSize);
+        this.isLoading = false;
+      });
     });
   }
-
-  task: Task = {
-    name: 'סנן לפי',
-    completed: false,
-    color: 'primary',
-    subtasks: [
-      { name: 'מתכונים שלי', completed: false, color: 'primary' },
-      { name: 'Accent', completed: false, color: 'accent' },
-      { name: 'Warn', completed: false, color: 'warn' },
-    ],
-  };
 
   searchRecipeByPreparationTime(time: number) {
     this.recipeService.getRecipesByPreparationTime(time).subscribe(data => {
@@ -86,33 +122,24 @@ export class AllRecipesComponent {
     this.length = e.length;
     this.pageSize = e.pageSize;
     this.pageIndex = e.pageIndex;
-    this.filteredRecipes = this.recipes.slice((this.pageIndex) * this.pageSize, (this.pageIndex + 1) * this.pageSize)
-    // const myRecipesTask = this.task.subtasks?.find(t => t.name === 'מתכונים שלי');
-
-    // if (myRecipesTask?.completed) {
-    //   // Fetch only user's recipes if "מתכונים שלי" is selected
-    //   this.filterMyRecipe();
-    // } else {
-    //   // Fetch all recipes if "מתכונים שלי" is not selected
-    //   this.recipeService.getAllRecipes().subscribe(data => {
-    //     this.recipes = data;
-    //     this.filteredRecipes = this.recipes.slice((this.pageIndex) * this.pageSize, (this.pageIndex + 1) * this.pageSize);
-    //   });
-    // }
+    this.filterRecipes();
   }
 
   updateAllComplete() {
     this.allComplete = this.task.subtasks != null && this.task.subtasks.every(t => t.completed);
+
     const myRecipesTask = this.task.subtasks?.find(t => t.name === 'מתכונים שלי');
-    if (myRecipesTask?.completed) {
-      this.filterMyRecipe();
-    } else {
-      // Optionally, fetch all recipes if "מתכונים שלי" is not selected
-      this.recipeService.getAllRecipes().subscribe(data => {
-        this.filteredRecipes = data;
-      });
-    }
+    this.isFilterMyRecipes = !!myRecipesTask?.completed;
+
+    const categoriesTask = this.task.subtasks?.find(t => t.name === 'קטגוריות');
+    this.selectedCategories = categoriesTask?.subtasks?.filter(sub => sub.completed).map(sub => sub.name) || [];
+
+    const difficultiesTask = this.task.subtasks?.find(t => t.name === 'רמת קושי');
+    this.selectedDifficulties = difficultiesTask?.subtasks?.filter(sub => sub.completed).map(sub => sub.name) || [];
+
+    this.filterRecipes();
   }
+
 
   someComplete(): boolean {
     if (this.task.subtasks == null) {
@@ -130,9 +157,13 @@ export class AllRecipesComponent {
   }
 
   applyFilter(filterValue: any) {
-    this.recipeService.getAllRecipes(filterValue.value).subscribe(data => {
-      this.filteredRecipes = data
-    });
+    // this.recipeService.getAllRecipes(filterValue.value).subscribe(data => {
+    //   this.filteredRecipes = data
+    // });
+    this.filterBySearch = true;
+    this.searchValue = filterValue.value.toLowerCase();
+    this.pageIndex = 0;
+    this.filterRecipes();
   }
 
   clearSearch(search: any) {
@@ -145,9 +176,42 @@ export class AllRecipesComponent {
     this.router.navigateByUrl(`recipeDetails/${this.recipeId}`);
   }
 
-  filterMyRecipe() {
-    this.recipeService.getRecipesByUserId(this.authService.currentUser?._id).subscribe(data => { this.filteredRecipes = data }
+  getMyRecipes() {
+    this.recipeService.getPrivateRecipesByUserId(this.authService.currentUser?._id).subscribe(data => { this.myPrivateRecipes = data }
     )
   }
 
+  filterByDifficulty(list: string[]) {
+    this.filteredRecipes = this.recipes.filter(recipe =>
+      list.includes(Difficulty[recipe.difficulty])
+    )
+  }
+
+  filterRecipes() {
+    let filtered = [...this.recipes];
+    if (this.filterBySearch) {
+      filtered = filtered.filter(recipe => recipe.name.toLowerCase().includes(this.searchValue))
+    }
+    if (this.isFilterMyRecipes) {
+      filtered = filtered.filter(recipe => recipe.addedBy?._id === this.authService.currentUser?._id);
+      if (this.myPrivateRecipes.length > 0) {
+        filtered.push(...this.myPrivateRecipes);
+      }
+    }
+
+    if (this.selectedCategories.length > 0) {
+      filtered = filtered.filter(recipe =>
+        recipe.categories.some(category => this.selectedCategories.includes(category))
+      );
+    }
+
+    if (this.selectedDifficulties.length > 0) {
+      filtered = filtered.filter(recipe =>
+        this.selectedDifficulties.includes(Difficulty[recipe.difficulty])
+      );
+    }
+
+    this.filteredRecipes = filtered.slice(this.pageIndex * this.pageSize, (this.pageIndex + 1) * this.pageSize);
+    this.length = filtered.length;
+  }
 }

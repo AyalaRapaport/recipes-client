@@ -27,7 +27,7 @@ export class RecipesService {
     return this.http.get<Recipe>(`${this.recipeURL}/` + id);
   }
 
-  getRecipesByUserId(id: number | undefined): Observable<Recipe[]> {
+  getPrivateRecipesByUserId(id: number | undefined): Observable<Recipe[]> {
     return this.http.get<Recipe[]>(this.recipeURL + 'recipeByUserId/' + id);
   }
 
@@ -35,14 +35,11 @@ export class RecipesService {
     return this.http.get<Recipe[]>(this.recipeURL + 'recipeByPreparationTime/' + preparationTime);
   }
 
+  getImage(imageName: string) {
+    return this.http.get(`${this.recipeURL}/image/${imageName}`, { responseType: 'blob' });
+  }
 
-  // addRecipe(r: Recipe) {
-  //   return this.http.post<Recipe>(
-  //     `${this.recipeURL}`,
-  //     { recipe: r, token: this.userService.token }
-  //   );
-  // }
-  addRecipe(r: Recipe) {
+  addRecipe(r: any) {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${this.userService.token}`);
     console.log("Attempting to add recipe:", r);
     return this.http.post<Recipe>(
@@ -59,7 +56,7 @@ export class RecipesService {
     });
   }
 
-  updateRecipe(r: Recipe) {
+  updateRecipe(r: any) {
     return this.http.put<Recipe>(`${this.recipeURL}/${r._id}`, r).subscribe(
       response => {
         if (!response._id) {

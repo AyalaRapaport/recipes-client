@@ -34,6 +34,8 @@ export class RecipeFormComponent {
   newCategoryName = '';
   recipeId: string | null = null
   isUpdateMode: boolean = false
+  selectedFile: File | null = null;
+  selectedImage: string | ArrayBuffer | null = null;
 
   constructor(private recipeService: RecipesService, private route: ActivatedRoute, private fb: FormBuilder, private categoryService: CategoriesService, private authService: AuthService) {
 
@@ -46,9 +48,9 @@ export class RecipeFormComponent {
       preparationTime: fb.control('', [Validators.required, Validators.min(1)]),
       preparationHours: fb.control(0, [Validators.required, Validators.min(0)]),
       preparationMinutes: fb.control(0, [Validators.required, Validators.min(0)]),
-      isPrivate: fb.control(''),
-      image: fb.control(''),
-      categories: fb.control([]),
+      isPrivate: fb.control('', [Validators.required, Validators.pattern(/^(כן|לא)$/)]),
+      image: fb.control('', [Validators.required, Validators.pattern(/.*\.(jpg|jpeg|png)$/)]),
+      categories: fb.control([], [Validators.required, Validators.minLength(1)]),
       newCategories: fb.array([this.createCategory()]),
       ingredients: fb.array([this.createIngredient()]),
       layers: fb.array([this.createLayer()]),
@@ -71,17 +73,30 @@ export class RecipeFormComponent {
         preparationHours: Math.floor(recipe?.preparationTime ? recipe.preparationTime / 60 : 0),
         preparationMinutes: recipe?.preparationTime ? recipe.preparationTime % 60 : 0,
         isPrivate: recipe.isPrivate ? 'כן' : 'לא',
-        image: recipe?.image[0],
+        imageName: recipe?.imageName,
+        imageUrl: recipe?.imageUrl,
         categories: recipe?.categories
       });
-
-      const ingredients = this.recipeForm.get('ingredients') as FormArray;
-      if (recipe.ingredients) {
-        recipe.ingredients.forEach(ingredient => {
-          ingredients.push(this.fb.group({ name: ingredient }));
+      this.selectedImage = recipe.imageUrl;
+      const layersArray = this.recipeForm.get('layers') as FormArray;
+      while (layersArray.length !== 0) {
+        layersArray.removeAt(0);
+      }
+      if (recipe.layers) {
+        recipe.layers.forEach(layer => {
+          const layerGroup = this.fb.group({
+            description: layer.description,
+            ingredients: this.fb.array([])
+          });
+          const ingredientsArray = layerGroup.get('ingredients') as FormArray;
+          if (layer.ingredients) {
+            layer.ingredients.forEach(ingredient => {
+              ingredientsArray.push(this.fb.group({ name: ingredient }));
+            });
+          }
+          layersArray.push(layerGroup);
         });
       }
-
       const preparationInstructions = this.recipeForm.get('preparationInstructions') as FormArray;
       while (preparationInstructions.length !== 0) {
         preparationInstructions.removeAt(0);
@@ -92,6 +107,18 @@ export class RecipeFormComponent {
         });
       }
     });
+  }
+
+  onFileSelected(event: any) {
+    this.selectedFile = event.target.files[0];
+    if (this.selectedFile) {
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.selectedImage = e.target.result;
+        // this.recipeForm.patchValue({ image: this.selectedFile.name }); // עדכון שדה התמונה בטופס
+      };
+      reader.readAsDataURL(this.selectedFile);
+    }
   }
 
   updateCategories(selectedCategories: string[]): void {
@@ -134,10 +161,6 @@ export class RecipeFormComponent {
     this.recipeForm.get('categories')?.setValue(currentCategories);
   }
 
-  // get ingredients(): FormArray {
-  //   return this.recipeForm.get('ingredients') as FormArray;
-  // }
-
   get instructions(): FormArray {
     return this.recipeForm.get('preparationInstructions') as FormArray;
   }
@@ -152,12 +175,6 @@ export class RecipeFormComponent {
   getIngredientsArray(layer: AbstractControl): FormArray {
     return layer.get('ingredients') as FormArray;
   }
-
-  // updateIngredients() {
-  //   this.layers.controls.forEach((layer, index) => {
-  //     this.layerIngredients[index] = this.getIngredientsArray(layer);
-  //   });
-  // }
 
   getIngredients(layer: AbstractControl): FormArray {
     return layer.get('ingredients') as FormArray;
@@ -196,17 +213,6 @@ export class RecipeFormComponent {
     this.layers.removeAt(index);
   }
 
-  // onIngredientInput(index: number) {
-  //   const control = this.ingredients.at(index);
-  //   if (control.value.name && index === this.ingredients.length - 1) {
-  //     this.ingredients.push(this.createIngredient);
-  //     console.log(this.ingredients);
-
-  //   } else if (!control.value.name && index !== this.ingredients.length - 1) {
-  //     this.ingredients.removeAt(index);
-  //   }
-  // }
-
   onIngredientInput(layerIndex: number, ingredientIndex: number) {
     const layersArray = this.layers.at(layerIndex).get('ingredients') as FormArray;
     const control = layersArray.at(ingredientIndex);
@@ -242,15 +248,16 @@ export class RecipeFormComponent {
       let recipe = this.recipeForm.value;
       const user = { _id: this.authService.currentUser?._id, name: this.authService.currentUser?.username }
       recipe.user = user;
-      // this.recipeForm.patchValue({ preparationTime: totalPreparationTime });
-      // const newRecipe = new Recipe('', recipe.name, recipe.description, recipe.categories,
-      //   totalPreparationTime, recipe.difficulity, recipe.ingredients, recipe.preparationInstructions,
-      //   user, recipe.image, recipe.isPrivate, undefined)
-      // console.log(newRecipe);
-
-      console.log(recipe);
-      debugger
-      this.recipeService.addRecipe(recipe);
+      if (this.selectedFile) {
+        const formData = new FormData();
+        formData.append('image', this.selectedFile);
+        formData.append('recipe', JSON.stringify(recipe));
+        this.recipeService.addRecipe(formData);
+      }
+      else {
+        debugger
+        this.recipeService.addRecipe(recipe);
+      }
     }
   }
   updateRecipe() {
@@ -259,6 +266,13 @@ export class RecipeFormComponent {
     recipe.user = user;
     recipe._id = this.recipeId;
     console.log(recipe);
-    this.recipeService.updateRecipe(recipe);
+    if (this.selectedFile) {
+      const formData = new FormData();
+      formData.append('image', this.selectedFile);
+      formData.append('recipe', JSON.stringify(recipe));
+      this.recipeService.updateRecipe(formData);
+    }
+    else
+      this.recipeService.updateRecipe(recipe);
   }
 }

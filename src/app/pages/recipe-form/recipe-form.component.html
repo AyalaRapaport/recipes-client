@@ -8,7 +8,6 @@
     <mat-form-field>
       <mat-label>תיאור </mat-label>
       <textarea formControlName="description" matInput></textarea>
-      <!-- <input formControlName="description" matInput> -->
     </mat-form-field>
   </div>
 
@@ -50,13 +49,6 @@
     </mat-expansion-panel>
   </mat-accordion>
 
-  <section class="example-section full-width">
-    <label class="example-margin">האם פרטי:</label>
-    <mat-radio-group formControlName="isPrivate">
-      <mat-radio-button class="example-margin" value="לא">לא</mat-radio-button>
-      <mat-radio-button class="example-margin" value="כן">כן</mat-radio-button>
-    </mat-radio-group>
-  </section>
   <div class="section-header">זמן הכנה</div>
 
   <section class="section">
@@ -69,35 +61,7 @@
       <input formControlName="preparationMinutes" type="number" matInput value="0" min="0">
     </mat-form-field>
   </section>
-  
-  <!-- <div formArrayName="layers">
-    <div *ngFor="let layer of layers.controls; let iLayer = index" [formGroupName]="iLayer">
-      <mat-form-field>
-        <input matInput placeholder="שם שכבה" formControlName="name">
-      </mat-form-field>
-      <mat-accordion class="example-headers-align" multi>
-        <mat-expansion-panel>
-          <mat-expansion-panel-header>
-            <mat-panel-title>מרכיבים </mat-panel-title>
-            <mat-panel-description>
-              <mat-icon>restaurant_menu</mat-icon>
-            </mat-panel-description>
-          </mat-expansion-panel-header>
-          <div formArrayName="ingredients">
-            <div *ngFor="let ingredient of ingredients.controls; let iIngredient = index">
-              <mat-form-field [formGroupName]="iIngredient">
-                <mat-label>{{ iIngredient + 1 }}</mat-label>
-                <input formControlName="name" matInput (input)="onIngredientInput(iLayer,iIngredient)">
-              </mat-form-field>
 
-            </div>
-          </div>
-        </mat-expansion-panel>
-      </mat-accordion>
-      <button mat-button type="button" (click)="addLayer()">הוסף שכבה</button>
-      <button mat-button type="button" (click)="removeLayer(iLayer)" *ngIf="layers.length > 1">הסר שכבה</button>
-    </div>
-  </div> -->
   <div formArrayName="layers">
     <div *ngFor="let layer of layers.controls; let layerIndex = index" [formGroupName]="layerIndex">
       <mat-form-field>
@@ -112,7 +76,8 @@
             </mat-panel-description>
           </mat-expansion-panel-header>
           <div formArrayName="ingredients">
-            <div *ngFor="let ingredient of getIngredients(layer).controls; let ingredientIndex = index" [formGroupName]="ingredientIndex">
+            <div *ngFor="let ingredient of getIngredients(layer).controls; let ingredientIndex = index"
+              [formGroupName]="ingredientIndex">
               <mat-form-field>
                 <mat-label>{{ ingredientIndex + 1 }}</mat-label>
                 <input formControlName="name" matInput (input)="onIngredientInput(layerIndex, ingredientIndex)">
@@ -125,26 +90,6 @@
       <button mat-button type="button" (click)="removeLayer(layerIndex)" *ngIf="layers.length > 1">הסר שכבה</button>
     </div>
   </div>
-  
-  <!-- <div formArrayName="layers">
-    <div *ngFor="let layer of layers.controls; let i = index" [formGroupName]="i">
-      <mat-form-field>
-        <input matInput placeholder="שם שכבה" formControlName="name">
-      </mat-form-field>
-      
-      <div *ngIf="layerIngredients[i]" formArrayName="ingredients">
-        <div *ngFor="let ingredient of layerIngredients[i].controls; let j = index" [formGroupName]="j">
-          <mat-form-field>
-            <input matInput placeholder="מצרך" formControlName="name" (input)="onIngredientInput(j)">
-          </mat-form-field>
-        </div>
-      </div>
-  
-      <button mat-button type="button" (click)="addLayer()">הוסף שכבה</button>
-      <button mat-button type="button" (click)="removeLayer(i)" *ngIf="layers.length > 1">הסר שכבה</button>
-    </div>
-  </div> -->
-
 
   <mat-accordion class="example-headers-align" multi>
     <mat-expansion-panel>
@@ -164,10 +109,27 @@
       </div>
     </mat-expansion-panel>
   </mat-accordion>
-  <mat-form-field>
+  <!-- <mat-form-field>
     <mat-label>קישור לתמונה</mat-label>
     <input formControlName="image" matInput>
-  </mat-form-field>
+  </mat-form-field> -->
+  <div>
+    <label for="image"></label>
+    <input formControlName="image" type="file" id="image" (change)="onFileSelected($event)" />
+  </div>
+
+  <div *ngIf="selectedImage" class="image-container">
+    <img [src]="selectedImage" alt="תמונה שנבחרה" class="selected-image">
+  </div>
+
+  <section style="direction: rtl;" class="example-section full-width">
+    <label class="example-margin">האם פרטי:</label>
+    <mat-radio-group formControlName="isPrivate">
+      <mat-radio-button class="example-margin" value="לא">לא</mat-radio-button>
+      <mat-radio-button class="example-margin" value="כן">כן</mat-radio-button>
+    </mat-radio-group>
+  </section>
+
   <button *ngIf="!isUpdateMode" type="submit" mat-flat-button color="warn">הוסף מתכון</button>
   <button *ngIf="isUpdateMode" (click)="updateRecipe()" mat-flat-button color="warn">עדכן מתכון</button>
 

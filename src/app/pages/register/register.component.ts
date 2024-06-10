@@ -12,6 +12,8 @@ import { SignResponse, UsersService } from '../../shared/services/users.service'
 import { User } from '../../shared/models/user';
 import { AuthService } from '../../shared/services/auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { map, startWith } from 'rxjs';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -26,22 +28,17 @@ const USERNAME_REGEX = /^[a-zA-Zא-ת\s]{2,}$/;
   standalone: true,
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss',
-  imports: [MatIconModule, MatButtonModule, CommonModule, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule]
+  imports: [MatIconModule, MatAutocompleteModule, MatButtonModule, CommonModule, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule]
 })
 
 
 export class RegisterComponent {
+  constructor(private router: Router, private userService: UsersService, private authService: AuthService, private _snackBar: MatSnackBar) { }
+
   emailV: string = ''
   password: string = ''
-
-  ngOnInit() {
-    const state = history.state;
-    if (state && state.details) {
-      this.emailV = state.details.email;
-      this.password = state.details.password;
-      console.log(this.emailV);
-    }
-  }
+  domains: string[] = ['gmail.com', 'yahoo.com', 'outlook.com', 'walla.co.il', 'hotmail.com'];
+  filteredDomains: string[] = [];
   passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d).{4,}$/;
   hide = true;
   usernameFormControl = new FormControl('', [Validators.required, Validators.pattern(USERNAME_REGEX), Validators.minLength(2)]);
@@ -51,7 +48,34 @@ export class RegisterComponent {
 
   matcher = new MyErrorStateMatcher();
 
-  constructor(private router: Router, private userService: UsersService, private authService: AuthService, private _snackBar: MatSnackBar) { }
+  ngOnInit() {
+    const state = history.state;
+    if (state && state.details) {
+      this.emailV = state.details.email;
+      this.password = state.details.password;
+      console.log(this.emailV);
+    }
+    this.emailFormControl.valueChanges.pipe(
+      startWith(''),
+      map(value => this._filter(value || ''))
+    ).subscribe(filtered => this.filteredDomains = filtered);
+  }
+
+  private _filter(value: string): string[] {
+    const filterValue = value?.toLowerCase();
+    const atIndex = filterValue?.indexOf('@') ? filterValue?.indexOf('@') : 0;
+
+    if (atIndex >= 0) {
+      const enteredDomain = filterValue?.substring(atIndex + 1);
+      return this.domains.filter(domain => domain.startsWith(enteredDomain));
+    } else {
+      return [];
+    }
+  }
+
+  onOptionSelected(event: any): void {
+    this.emailV = event.option.value;
+  }
 
   signUp(name: string, pass: string, email: string, address: string) {
     const user: User = {
@@ -65,6 +89,7 @@ export class RegisterComponent {
         if (response.status === 201) {
           const responseBody: SignResponse = response.body!;
           console.log(responseBody);
+          this.userService.token = response.body?.token;
           this.authService.login(responseBody);
           this.router.navigateByUrl('allrecipes');
         }

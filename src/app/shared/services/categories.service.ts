@@ -16,6 +16,7 @@ export class CategoriesService {
   //     .subscribe(x => this.categories = x)
   // }
   getCategories() {
+    
     return this.http.get<Category[]>(this.categoryURL)
   }
 }

@@ -13,8 +13,9 @@ export class Recipe {
         public ingredients: string[],
         public preparationInstructions: string[],
         public addedBy: User | undefined,
-        public image: string,
-        public isPrivate:boolean,
+        public imageName: string,
+        public imageUrl: string,
+        public isPrivate: boolean,
         public layers: Layer[] | undefined,
     ) { }
 }

@@ -1,5 +1,5 @@
 import { CommonModule, UpperCasePipe } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { AuthService } from './shared/services/auth.service';
 import { User } from './shared/models/user';
@@ -14,34 +14,59 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
+
   constructor(private authService: AuthService, private router: Router, private userService: UsersService, private _snackBar: MatSnackBar) { }
-
-  ngOnInit(): void {
-    this.isTokenValid();
-    if (this.isLoggedIn() && !this.isToken) {
-      this._snackBar.open('עליך לבצע התחברות מחדש', 'כניסה', {
-        verticalPosition: 'top',
-      }).onAction().subscribe(() => {
-        const currentUserString = localStorage.getItem('currentUser');
-        if (currentUserString) {
-          const currentUser = JSON.parse(currentUserString);
-          const email = currentUser.email;
-          console.log(email);
-
-          this.router.navigateByUrl('login', { state: { email: email } });
-        }
-      });
-    }
-  }
-
   isToken: boolean | string | null = false
   showProfile: boolean = false;
   isManager: boolean = this.authService.currentUser?.role == 'admin'
   title = 'recipes';
+  // @HostListener('window:beforeunload', ['$event'])
+  // unloadHandler(event: Event) {
+  //   if (!sessionStorage.getItem('isReloading')) {
+  //    this.logOut();
+  //   }
+  // }
+
+  // @HostListener('window:load', ['$event'])
+  // loadHandler(event: Event) {
+  //   sessionStorage.setItem('isReloading', 'true');
+  // }
+
+  ngOnDestroy(): void {
+    //this.authService.logout();
+  }
+
+  ngOnInit(): void {
+    this.isTokenValid();
+    console.log(this.isLoggedIn());
+
+    if (this.isLoggedIn() && !this.isToken) {
+      this._snackBar.open('עליך לבצע התחברות מחדש', 'כניסה', {
+        verticalPosition: 'top',
+      }).onAction().subscribe(() => {
+        const currentUserString = sessionStorage.getItem('currentUser');
+        if (currentUserString) {
+          const currentUser = JSON.parse(currentUserString);
+          const email = currentUser.email;
+          this.router.navigateByUrl('login', { state: { email: email } });
+        }
+      });
+    }
+
+    this.userService.loginStatus$.subscribe(status => {
+      if (status) {
+        this.isTokenValid();
+        this.isAdmin();
+      }
+    })
+  }
+
+  isAdmin() {
+    this.isManager = this.authService.currentUser?.role == 'admin'
+  }
 
   isTokenValid() {
-
     this.isToken = this.userService.token
   }
 
