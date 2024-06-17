@@ -1,5 +1,10 @@
+@font-face {
+    font-family: 'DanaYadAlefAlefAlef-Normal';
+    src: url('../../../assets/fonts/DanaYadAlefAlefAlef-Normal.otf') format('opentype');
+}
+
 body {
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'DanaYadAlefAlefAlef-Normal', 'Montserrat', sans-serif;
 }
 
 .spinner {
@@ -29,6 +34,21 @@ body {
     }
 }
 
+.button {
+    background-color: #74d4e1;
+    border: none;
+    color: white;
+    //padding: 3vh 3vb;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 3vb;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 10vb;
+}
+
+
 .section {
     direction: rtl;
     margin-right: 0;
@@ -38,13 +58,13 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin-top: 7vh;
 }
 
 .container {
     display: flex;
     justify-content: space-between;
     float: right;
-    // width: 8%;
     margin-right: 10px;
 }
 
@@ -63,7 +83,8 @@ ul {
     align-items: center;
     margin: 5vb;
     display: flex;
-    justify-content:center
+    justify-content: center;
+
 }
 
 .flex-page {
@@ -99,7 +120,7 @@ ul {
 }
 
 #recipe-img {
-    width: 40vb;
+    width: 22vw;
     height: 40vh;
 }
 

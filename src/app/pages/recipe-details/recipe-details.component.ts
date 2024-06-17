@@ -18,7 +18,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class RecipeDetailsComponent implements OnInit {
 
-  recipe: Recipe | null = null;
+  recipe: Recipe | any | null = null;
   Difficulity = Difficulty
   currentIndex: number = 0;
   isOwner: boolean | undefined = false

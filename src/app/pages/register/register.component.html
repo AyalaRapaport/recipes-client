@@ -1,52 +1,58 @@
-<form class="form" #myForm="ngForm">
-    <div class="row">
-        <mat-form-field class="field">
-            <mat-label>שם משתמש</mat-label>
-            <input #username type="text" matInput [formControl]="usernameFormControl" [errorStateMatcher]="matcher"
-                placeholder="israel">
-            <mat-error *ngIf="usernameFormControl.hasError('required')">שם משתמש הוא <strong>שדה חובה</strong></mat-error>
-            <mat-error *ngIf="usernameFormControl.hasError('minlength')">שם משתמש חייב להכיל לפחות 2 תווים</mat-error>
-            <mat-error *ngIf="usernameFormControl.hasError('pattern') && !usernameFormControl.hasError('minlength')">שם משתמש יכול לכלול רק אותיות בעברית או אנגלית ורווחים</mat-error>
-        </mat-form-field>
+<!-- <div class="background"> -->
+    <form class="form" #myForm="ngForm">
+        <div class="row">
+            <mat-form-field class="field">
+                <mat-label>שם משתמש</mat-label>
+                <input #username type="text" matInput [formControl]="usernameFormControl" [errorStateMatcher]="matcher"
+                    placeholder="israel">
+                <mat-error *ngIf="usernameFormControl.hasError('required')">שם משתמש הוא <strong>שדה
+                        חובה</strong></mat-error>
+                <mat-error *ngIf="usernameFormControl.hasError('minlength')">שם משתמש חייב להכיל לפחות 2
+                    תווים</mat-error>
+                <mat-error
+                    *ngIf="usernameFormControl.hasError('pattern') && !usernameFormControl.hasError('minlength')">שם
+                    משתמש יכול לכלול רק אותיות בעברית או אנגלית ורווחים</mat-error>
+            </mat-form-field>
 
-        <mat-form-field class="field">
-            <mat-label>סיסמה</mat-label>
-            <input [(ngModel)]="password" [type]="hide ? 'password' : 'text'" #pass type="password" matInput [formControl]="passwordFormControl"
-                [errorStateMatcher]="matcher" placeholder="****">
-            <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
-                [attr.aria-pressed]="hide">
-                <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
-            </button>
-            <mat-error *ngIf="passwordFormControl.hasError('required')"> <strong>שדה חובה</strong></mat-error>
-            <mat-error *ngIf="passwordFormControl.hasError('minlength')"> ססמה חייבת להכיל לפחות 4 תווים</mat-error>
-            <mat-error *ngIf="passwordFormControl.hasError('pattern')">  ססמה חייבת להכיל לפחות מספר אחד ואות אחת באנגלית</mat-error>
+            <mat-form-field class="field">
+                <mat-label>סיסמה</mat-label>
+                <input [(ngModel)]="password" [type]="hide ? 'password' : 'text'" #pass type="password" matInput
+                    [formControl]="passwordFormControl" [errorStateMatcher]="matcher" placeholder="****">
+                <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+                    [attr.aria-pressed]="hide">
+                    <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                </button>
+                <mat-error *ngIf="passwordFormControl.hasError('required')"> <strong>שדה חובה</strong></mat-error>
+                <mat-error *ngIf="passwordFormControl.hasError('minlength')"> ססמה חייבת להכיל לפחות 4 תווים</mat-error>
+                <mat-error *ngIf="passwordFormControl.hasError('pattern')"> ססמה חייבת להכיל לפחות מספר אחד ואות אחת
+                    באנגלית</mat-error>
 
-        </mat-form-field>
-    </div>
+            </mat-form-field>
+        </div>
 
-    <div class="row">
-        <mat-form-field>
-            <mat-label>אימייל </mat-label>
-            <input [(ngModel)]="emailV" #email type="text" matInput [formControl]="emailFormControl" [errorStateMatcher]="matcher"
-              placeholder="Ex. pat@example.com" [matAutocomplete]="auto">
-            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onOptionSelected($event)">
-              <mat-option *ngFor="let domain of filteredDomains" [value]="emailV.split('@')[0] + '@' + domain">
-                {{ emailV.split('@')[0] + '@' + domain }}
-              </mat-option>
-            </mat-autocomplete>
-            <mat-error *ngIf="emailFormControl.hasError('required')"> <strong>שדה חובה</strong></mat-error>
-            <mat-error *ngIf="emailFormControl.hasError('email')"> כתובת אימייל אינה תקינה </mat-error>
-          </mat-form-field>
+        <div class="row">
+            <mat-form-field>
+                <mat-label>אימייל </mat-label>
+                <input [(ngModel)]="emailV" #email type="text" matInput [formControl]="emailFormControl"
+                    [errorStateMatcher]="matcher" placeholder="Ex. pat@example.com" [matAutocomplete]="auto">
+                <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onOptionSelected($event)">
+                    <mat-option *ngFor="let domain of filteredDomains" [value]="emailV.split('@')[0] + '@' + domain">
+                        {{ emailV.split('@')[0] + '@' + domain }}
+                    </mat-option>
+                </mat-autocomplete>
+                <mat-error *ngIf="emailFormControl.hasError('required')"> <strong>שדה חובה</strong></mat-error>
+                <mat-error *ngIf="emailFormControl.hasError('email')"> כתובת אימייל אינה תקינה </mat-error>
+            </mat-form-field>
 
-        <mat-form-field class="field">
-            <mat-label>כתובת</mat-label>
-            <input #address type="text" matInput [formControl]="addressFormControl" [errorStateMatcher]="matcher"
-                placeholder="elad">
-            <mat-error *ngIf="addressFormControl.hasError('required')"> <strong>שדה חובה</strong></mat-error>
-        </mat-form-field>
-    </div>
+            <mat-form-field class="field">
+                <mat-label>כתובת</mat-label>
+                <input #address type="text" matInput [formControl]="addressFormControl" [errorStateMatcher]="matcher"
+                    placeholder="elad">
+                <mat-error *ngIf="addressFormControl.hasError('required')"> <strong>שדה חובה</strong></mat-error>
+            </mat-form-field>
+        </div>
 
-    <button (click)="signUp(username.value, pass.value,email.value,address.value)" class="button"
-        [disabled]="usernameFormControl.invalid || passwordFormControl.invalid||emailFormControl.invalid||addressFormControl.invalid"
-        >הרשמה</button>
-</form>
+        <button (click)="signUp(username.value, pass.value,email.value,address.value)" class="button"
+            [disabled]="usernameFormControl.invalid || passwordFormControl.invalid||emailFormControl.invalid||addressFormControl.invalid">הרשמה</button>
+    </form>
+<!-- </div> -->

@@ -34,13 +34,13 @@
 <div class="recipe-details">
     <div class="recipe-header">
         <h2>{{ recipe?.name }}</h2>
-        <h3>{{recipe?.description}}</h3>
+        <h3 style="font-family: 'DanaYadAlefAlefAlef-Normal';">{{recipe?.description}}</h3>
         <div *ngFor="let c of recipe?.categories">
             <p>קטגוריה: {{c}}</p>
         </div>
     </div>
     <div class="recipe-image">
-        <img src="{{ recipe?.imageUrl }}" alt="{{ recipe?.name }}">
+        <img src="{{ recipe?.imageUrl||recipe?.image }}" alt="{{ recipe?.name }}">
     </div>
     
     <div class="recipe-ingredients">

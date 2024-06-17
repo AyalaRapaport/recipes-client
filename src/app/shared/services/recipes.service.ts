@@ -28,6 +28,8 @@ export class RecipesService {
   }
 
   getPrivateRecipesByUserId(id: number | undefined): Observable<Recipe[]> {
+    console.log(this.recipeURL + 'recipeByUserId/' + id);
+    
     return this.http.get<Recipe[]>(this.recipeURL + 'recipeByUserId/' + id);
   }
 
@@ -35,9 +37,9 @@ export class RecipesService {
     return this.http.get<Recipe[]>(this.recipeURL + 'recipeByPreparationTime/' + preparationTime);
   }
 
-  getImage(imageName: string) {
-    return this.http.get(`${this.recipeURL}/image/${imageName}`, { responseType: 'blob' });
-  }
+  // getImage(imageName: string) {
+  //   return this.http.get(`${this.recipeURL}/image/${imageName}`, { responseType: 'blob' });
+  // }
 
   addRecipe(r: any) {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${this.userService.token}`);
@@ -56,9 +58,10 @@ export class RecipesService {
     });
   }
 
-  updateRecipe(r: any) {
-    return this.http.put<Recipe>(`${this.recipeURL}/${r._id}`, r).subscribe(
+  updateRecipe(r: any, id: string | null) {
+    return this.http.put<Recipe>(`${this.recipeURL}/${id}`, r).subscribe(
       response => {
+        debugger
         if (!response._id) {
           this._snackBar.open('אופס המתכון לא התעדכן נסה שנית', 'סגור', { verticalPosition: 'top', });
         }
@@ -68,6 +71,7 @@ export class RecipesService {
           console.log("Server response:", response);
         }
       }, error => {
+        debugger
         this._snackBar.open('אופס המתכון לא התעדכן נסה שנית', 'סגור', { verticalPosition: 'top', });
         console.error("Error occurred:", error);
       });

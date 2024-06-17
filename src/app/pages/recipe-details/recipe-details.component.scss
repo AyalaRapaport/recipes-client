@@ -59,10 +59,24 @@
   padding: 0;
   list-style: none;
   direction: rtl;
-  background-color: #fef5f6;
+  //background-color: #fef5f6;
+  background-color: rgb(255 225 224);
   height: 25vh;
   width: 50vw;
-  margin:auto;
+  margin: auto;
+}
+
+button {
+  background-color: #74d4e1;
+  border: none;
+  color: white;
+  padding: 10px 25px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 20px;
+  margin-top: 20px;
+  cursor: pointer;
+  border-radius: 10px;
 }
 
 .overview-item {
@@ -96,6 +110,7 @@
   position: relative;
   top: 8%;
 }
+
 .gallery-container {
   text-align: center;
 }
@@ -104,13 +119,14 @@
   position: relative;
   display: flex;
   align-items: center;
-  overflow: hidden; /* כדי להסתיר חלקית את התמונות החוצות */
+  overflow: hidden;
+  /* כדי להסתיר חלקית את התמונות החוצות */
   width: 100%;
 }
 
 .images {
   display: flex;
-  transition: transform 0.5s ease-in-out; 
+  transition: transform 0.5s ease-in-out;
 }
 
 .gallery-image {

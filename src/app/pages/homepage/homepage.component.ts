@@ -18,7 +18,7 @@ export class HomepageComponent implements OnInit {
   constructor(private recipeservice: RecipesService, private authService: AuthService, private _snackBar: MatSnackBar, private router: Router) { }
   slideIndex: number = 1;
   recipes: Recipe[] = [];
-  slideGroups: Recipe[][] = [];
+  slideGroups: any[][] = [];
   isLoaded: boolean = false;
 
   ngOnInit(): void {
@@ -34,7 +34,7 @@ export class HomepageComponent implements OnInit {
   getRecipeDetails(id: string) {
     if (!this.authService.isLoggedIn) {
       this._snackBar.open('לצפיה במתכון עליך לבצע התחברות', 'התחברות', {
-        verticalPosition: 'top',
+        verticalPosition: 'top',duration:5000,
       }).onAction().subscribe(() => {
         this.router.navigateByUrl('login');
       });

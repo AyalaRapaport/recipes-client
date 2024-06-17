@@ -14,7 +14,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent implements OnInit, OnDestroy {
+export class AppComponent implements OnInit {
 
   constructor(private authService: AuthService, private router: Router, private userService: UsersService, private _snackBar: MatSnackBar) { }
   isToken: boolean | string | null = false
@@ -32,10 +32,6 @@ export class AppComponent implements OnInit, OnDestroy {
   // loadHandler(event: Event) {
   //   sessionStorage.setItem('isReloading', 'true');
   // }
-
-  ngOnDestroy(): void {
-    //this.authService.logout();
-  }
 
   ngOnInit(): void {
     this.isTokenValid();

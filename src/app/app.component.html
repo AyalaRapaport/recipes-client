@@ -1,39 +1,12 @@
-<div class="background">
-  <div *ngIf="!isLoggedIn()" class="guest-profile">
-    <img class="icon" src="../assets/images/anonimy.png" alt="Guest Icon">
-    <p class="text">מצב אורח</p>
-  </div>
-
-  <div (click)="isShowProfile()" *ngIf="isLoggedIn()" class="outer-circle">
-    <div class="inner-circle">
-      <p class="letter">{{ getFirst()|uppercase}}</p>
-    </div>
-    <!-- <img alt="{{ getUser()?.username }}"> -->
-  </div>
-
-  <mat-card class="profile-container" *ngIf="showProfile">
-    <button (click)="isShowProfile()" class="close-button">×</button>
-    <mat-card-content class="profile-details">
-      <div mat-card-avatar class="avatar">
-        <p class="letter">{{ getFirst()|uppercase}}</p>
-      </div>
-      <p>שם משתמש:{{ getUser()?.username }}</p>
-      <p>כתובת:{{ getUser()?.address }}</p>
-      <p>אימייל:{{ getUser()?.email }}</p>
-      <img class="logOut" (click)="logOut()" src="../assets/images/exit.png" alt="log out" />
-    </mat-card-content>
-  </mat-card>
-
-
-
+<div class="navbar-wrapper">
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container">
+      <img src="../assets/images/logo.png" alt="Logo" class="navbar-logo">
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ml-auto">
           <li class="nav-item">
             <a class="nav-link" routerLink="homepage" routerLinkActive="active">דף הבית</a>
           </li>
-
           <li *ngIf="isToken" class="nav-item">
             <a class="nav-link" routerLink="allrecipes" routerLinkActive="active">מתכונים</a>
           </li>
@@ -43,11 +16,9 @@
           <li class="nav-item">
             <a class="nav-link" routerLink="register" routerLinkActive="active">הרשמה</a>
           </li>
-
           <li *ngIf="isToken" class="nav-item">
             <a class="nav-link" routerLink="recipe-form" routerLinkActive="active">הוסף מתכון</a>
           </li>
-
           <li *ngIf="isManager" class="nav-item">
             <a class="nav-link" routerLink="allusers" routerLinkActive="active">רשימת משתמשים </a>
           </li>
@@ -55,5 +26,26 @@
       </div>
     </div>
   </nav>
-  <router-outlet />
 </div>
+<div *ngIf="!isLoggedIn()" class="guest-profile">
+  <img class="icon" src="../assets/images/anonimy.png" alt="Guest Icon">
+  <p class="text">מצב אורח</p>
+</div>
+<div (click)="isShowProfile()" *ngIf="isLoggedIn()" class="outer-circle">
+  <div class="inner-circle">
+    <p class="letter">{{ getFirst()|uppercase}}</p>
+  </div>
+</div>
+<mat-card class="profile-container" *ngIf="showProfile">
+  <button (click)="isShowProfile()" class="close-button">×</button>
+  <mat-card-content class="profile-details">
+    <div mat-card-avatar class="avatar">
+      <p class="letter">{{ getFirst()|uppercase}}</p>
+    </div>
+    <p>שם משתמש:{{ getUser()?.username }}</p>
+    <p>כתובת:{{ getUser()?.address }}</p>
+    <p>אימייל:{{ getUser()?.email }}</p>
+    <img class="logOut" (click)="logOut()" src="../assets/images/exit.png" alt="log out" />
+  </mat-card-content>
+</mat-card>
+<router-outlet></router-outlet>

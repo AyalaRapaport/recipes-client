@@ -10,6 +10,8 @@
       <textarea formControlName="description" matInput></textarea>
     </mat-form-field>
   </div>
+  <mat-error *ngIf="recipeForm.get('name')?.hasError('pattern')">שם מכיל לפחות 2 אותיות</mat-error>
+  <mat-error *ngIf="recipeForm.get('description')?.hasError('pattern')">תיאור מכיל לפחות 2 אותיות</mat-error>
 
   <div class="row">
     <section class="section">
@@ -20,7 +22,6 @@
           <mat-option value="אחר">אחר</mat-option>
         </mat-select>
       </mat-form-field>
-
     </section>
     <mat-form-field>
       <mat-label>רמת קושי</mat-label>
@@ -29,6 +30,10 @@
       </mat-select>
     </mat-form-field>
   </div>
+  <mat-error *ngIf="recipeForm.get('categories')?.hasError('required') && recipeForm.get('categories')?.touched">בחר
+    לפחות קטגוריה אחת</mat-error>
+  <mat-error *ngIf="recipeForm.get('difficulity')?.hasError('required') && recipeForm.get('difficulity')?.touched">בחר
+    דרגת קושי </mat-error>
 
   <mat-accordion *ngIf="showNewCategoryInput" class="example-headers-align" multi>
     <mat-expansion-panel>
@@ -61,6 +66,9 @@
       <input formControlName="preparationMinutes" type="number" matInput value="0" min="0">
     </mat-form-field>
   </section>
+  <mat-error
+    *ngIf="recipeForm.get('preparationHours')?.hasError('min') && recipeForm.get('preparationHours')?.touched&&recipeForm.get('preparationMinutes')?.hasError('min') && recipeForm.get('preparationMinutes')?.touched">הקש
+    זמן הכנה</mat-error>
 
   <div formArrayName="layers">
     <div *ngFor="let layer of layers.controls; let layerIndex = index" [formGroupName]="layerIndex">
@@ -90,6 +98,8 @@
       <button mat-button type="button" (click)="removeLayer(layerIndex)" *ngIf="layers.length > 1">הסר שכבה</button>
     </div>
   </div>
+  <mat-error *ngIf="recipeForm.get('layers')?.hasError('nonEmptyIngredients') && recipeForm.get('layers')?.touched">
+    חייב להיות לפחות מצרך אחד שאינו ריק בכל שכבה</mat-error>
 
   <mat-accordion class="example-headers-align" multi>
     <mat-expansion-panel>
@@ -109,6 +119,10 @@
       </div>
     </mat-expansion-panel>
   </mat-accordion>
+  <mat-error *ngIf="recipeForm.get('preparationInstructions')?.hasError('nonEmptyPreparationInstructions') && recipeForm.get('preparationInstructions')?.touched">
+    חייב להיות לפחות הוראת הכנה אחת שאינה ריקה
+  </mat-error>
+
   <!-- <mat-form-field>
     <mat-label>קישור לתמונה</mat-label>
     <input formControlName="image" matInput>
@@ -130,8 +144,8 @@
     </mat-radio-group>
   </section>
 
-  <button *ngIf="!isUpdateMode" type="submit" mat-flat-button color="warn">הוסף מתכון</button>
-  <button *ngIf="isUpdateMode" (click)="updateRecipe()" mat-flat-button color="warn">עדכן מתכון</button>
+  <button *ngIf="!isUpdateMode" type="submit" mat-flat-button class="button">הוסף מתכון</button>
+  <button *ngIf="isUpdateMode" (click)="updateRecipe()" mat-flat-button>עדכן מתכון</button>
 
   <div *ngIf="recipeForm.invalid">הטופס אינו תקין</div>
 

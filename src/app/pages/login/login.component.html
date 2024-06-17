@@ -1,8 +1,8 @@
-<form #loginForm="ngForm"  class="login-form">
+<form #loginForm="ngForm" class="login-form">
   <mat-form-field class="input-field">
     <mat-label>אימייל </mat-label>
-    <input [(ngModel)]="emailV" #email type="text" matInput [formControl]="emailFormControl" [errorStateMatcher]="matcher"
-      placeholder="Ex. pat@example.com" [matAutocomplete]="auto">
+    <input [(ngModel)]="emailV" #email type="text" matInput [formControl]="emailFormControl"
+      [errorStateMatcher]="matcher" placeholder="Ex. pat@example.com" [matAutocomplete]="auto">
     <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onOptionSelected($event)">
       <mat-option *ngFor="let domain of filteredDomains" [value]="emailV.split('@')[0] + '@' + domain">
         {{ emailV.split('@')[0] + '@' + domain }}
@@ -13,7 +13,7 @@
   </mat-form-field>
 
   <mat-form-field class="input-field">
-    <mat-label >ססמא</mat-label>
+    <mat-label>ססמא</mat-label>
     <input [type]="hide ? 'password' : 'text'" #pass type="password" matInput [formControl]="passwordFormControl"
       [errorStateMatcher]="matcher" placeholder="****">
     <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
@@ -25,7 +25,7 @@
     <mat-error *ngIf="passwordFormControl.hasError('pattern')"> ססמה חייבת להכיל לפחות מספר אחד ואות אחת</mat-error>
 
   </mat-form-field>
-</form>
 
-<button (click)="login(email.value, pass.value)" class="button"
-  [disabled]="emailFormControl.invalid || passwordFormControl.invalid">התחבר</button>
+  <button (click)="login(email.value, pass.value)" class="button"
+    [disabled]="emailFormControl.invalid || passwordFormControl.invalid">התחבר</button>
+</form>

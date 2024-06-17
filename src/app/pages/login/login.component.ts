@@ -20,7 +20,7 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
     return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
   }
 }
-const USERNAME_REGEX = /^[a-zA-Zא-ת\s]{2,}$/;
+//const USERNAME_REGEX = /^[a-zA-Zא-ת\s]{2,}$/;
 
 @Component({
   selector: 'app-login',

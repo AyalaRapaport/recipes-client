@@ -18,7 +18,8 @@ import { NgxSpinnerModule, NgxSpinnerService } from "ngx-spinner";
 import { Category } from '../../shared/models/category';
 import { CategoriesService } from '../../shared/services/categories.service';
 import { Difficulty } from '../../shared/difficulty';
-//ג122
+import { BehaviorSubject, Subject, forkJoin } from 'rxjs';
+
 export interface Task {
   name: string;
   completed: boolean;
@@ -36,12 +37,14 @@ export interface Task {
 export class AllRecipesComponent {
 
   constructor(private recipeService: RecipesService, private categoryService: CategoriesService, private spinner: NgxSpinnerService, private router: Router, private authService: AuthService) { }
-
+  private recipeSubject = new BehaviorSubject<Recipe[]>([])
+  recipe$ = this.recipeSubject.asObservable()
   recipes: Recipe[] = [];
-  filteredRecipes: Recipe[] = []
+  filteredRecipes: Recipe[] | any[] = []
   categories: Category[] = []
   isLoading: boolean = true;
   task!: Task
+  isFiltered: boolean = true
   selectedCategories: string[] = []
   selectedDifficulties: string[] = []
   isFilterMyRecipes: boolean = false;
@@ -73,42 +76,40 @@ export class AllRecipesComponent {
     this.categoryService.getCategories().subscribe(categories => {
       this.categories = categories;
       this.task = {
-        name: 'סנן לפי',
-        completed: false,
-        color: 'primary',
-        subtasks: [
+        name: 'סנן לפי', completed: false, color: 'primary', subtasks: [
           { name: 'מתכונים שלי', completed: false, color: 'primary' },
           {
-            name: 'קטגוריות',
-            completed: false,
-            color: 'primary',
-            subtasks: this.categories.map(category => ({
-              name: category.name,
-              completed: false,
-              color: 'primary'
+            name: 'קטגוריות', completed: false, color: 'primary', subtasks: this.categories.map(category => ({
+              name: category.name, completed: false, color: 'primary'
             }))
           },
           {
-            name: 'רמת קושי',
-            completed: false,
-            color: 'primary',
-            subtasks: difficultyLevels.map(diff => ({
-              name: diff,
-              completed: false,
-              color: 'primary'
+            name: 'רמת קושי', completed: false, color: 'primary', subtasks: difficultyLevels.map(diff => ({
+              name: diff, completed: false, color: 'primary'
             }))
           }
         ]
       };
 
-      this.recipeService.getAllRecipes().subscribe(data => {
-        this.recipes = data;
-        this.length = data.length;
+      //   this.recipeService.getAllRecipes().subscribe(data => {
+      //     this.recipes = data;
+      //     this.recipeSubject.next(data)
+      //     this.length = data.length;
+      //     this.filterRecipes();
+      //     this.isLoading = false;
+      //   });
+      forkJoin([
+        this.recipeService.getAllRecipes(),
+        this.authService.currentUser ? this.recipeService.getPrivateRecipesByUserId(this.authService.currentUser._id) : []
+      ]).subscribe(([publicRecipes, privateRecipes]) => {
+        this.recipes = [...publicRecipes, ...privateRecipes];
+        this.recipeSubject.next(this.recipes);
+        this.length = this.recipes.length;
         this.filterRecipes();
-        // this.filteredRecipes = this.recipes.slice((this.pageIndex) * this.pageSize, (this.pageIndex + 1) * this.pageSize);
         this.isLoading = false;
       });
     });
+    //});
   }
 
   searchRecipeByPreparationTime(time: number) {
@@ -157,11 +158,8 @@ export class AllRecipesComponent {
   }
 
   applyFilter(filterValue: any) {
-    // this.recipeService.getAllRecipes(filterValue.value).subscribe(data => {
-    //   this.filteredRecipes = data
-    // });
     this.filterBySearch = true;
-    this.searchValue = filterValue.value.toLowerCase();
+    this.searchValue = filterValue.value ? filterValue.value.toLowerCase() : filterValue;
     this.pageIndex = 0;
     this.filterRecipes();
   }
@@ -176,10 +174,13 @@ export class AllRecipesComponent {
     this.router.navigateByUrl(`recipeDetails/${this.recipeId}`);
   }
 
-  getMyRecipes() {
-    this.recipeService.getPrivateRecipesByUserId(this.authService.currentUser?._id).subscribe(data => { this.myPrivateRecipes = data }
-    )
-  }
+  // getMyRecipes() {
+  //   this.recipeService.getPrivateRecipesByUserId(this.authService.currentUser?._id).subscribe(data => {
+  //     console.log(data);
+  //     this.myPrivateRecipes = data
+  //   }
+  //   )
+  // }
 
   filterByDifficulty(list: string[]) {
     this.filteredRecipes = this.recipes.filter(recipe =>
@@ -187,6 +188,40 @@ export class AllRecipesComponent {
     )
   }
 
+  //   filterRecipes() {
+  //     let filtered = [...this.recipes];
+  //     if (this.filterBySearch) {
+  //       filtered = filtered.filter(recipe => recipe.name.toLowerCase().includes(this.searchValue))
+  //     }
+  //     if (this.isFilterMyRecipes) {
+  //      // this.isFiltered = false
+  //       filtered = filtered.filter(recipe => recipe.addedBy?._id === this.authService.currentUser?._id);
+  //       this.recipeService.getPrivateRecipesByUserId(this.authService.currentUser?._id).subscribe(data => {
+  //         // console.log(data);
+  //         // this.myPrivateRecipes = data
+  //         if (data.length > 0) {
+  //           debugger
+  //           filtered.push(...data);
+  //          // this.isFiltered = true
+  //         }
+  //       }
+  //       )
+  //     }
+  //     if (this.selectedCategories.length > 0) {
+  //       filtered = filtered.filter(recipe =>
+  //         recipe.categories.some(category => this.selectedCategories.includes(category))
+  //       );
+  //     }
+
+  //     if (this.selectedDifficulties.length > 0) {
+  //       filtered = filtered.filter(recipe =>
+  //         this.selectedDifficulties.includes(Difficulty[recipe.difficulty])
+  //       );
+  //     }
+  // debugger
+  //     this.filteredRecipes = filtered.slice(this.pageIndex * this.pageSize, (this.pageIndex + 1) * this.pageSize);
+  //     this.length = filtered.length;
+  //   }
   filterRecipes() {
     let filtered = [...this.recipes];
     if (this.filterBySearch) {
@@ -194,9 +229,18 @@ export class AllRecipesComponent {
     }
     if (this.isFilterMyRecipes) {
       filtered = filtered.filter(recipe => recipe.addedBy?._id === this.authService.currentUser?._id);
-      if (this.myPrivateRecipes.length > 0) {
-        filtered.push(...this.myPrivateRecipes);
-      }
+      this.recipeService.getPrivateRecipesByUserId(this.authService.currentUser?._id).subscribe(data => {
+        if (data.length > 0) {
+          filtered.push(...data);
+        }
+      });
+    }
+    this.applyAllFilters(filtered);
+  }
+
+  applyAllFilters(filtered: Recipe[]) {
+    if (this.filterBySearch) {
+      filtered = filtered.filter(recipe => recipe.name.toLowerCase().includes(this.searchValue));
     }
 
     if (this.selectedCategories.length > 0) {
@@ -211,7 +255,12 @@ export class AllRecipesComponent {
       );
     }
 
+    this.updateFilteredRecipes(filtered);
+  }
+
+  updateFilteredRecipes(filtered: Recipe[]) {
     this.filteredRecipes = filtered.slice(this.pageIndex * this.pageSize, (this.pageIndex + 1) * this.pageSize);
     this.length = filtered.length;
   }
+
 }

@@ -14,7 +14,7 @@
             <mat-icon>close</mat-icon>
         </button>
     </mat-form-field>
-    <button (click)="applyFilter(search)">חפש</button>
+    <button class="button" (click)="applyFilter(search)">חפש</button>
 </div>
 
 
@@ -71,14 +71,14 @@
         </section>
     </div>
 
-    <div *ngIf="!isLoading" class="recipe-grid">
+    <div *ngIf="!isLoading&&isFiltered" class="recipe-grid">
         @for (r of filteredRecipes; track r._id) {
         <mat-card (click)="showDetails(r._id)" class="recipe-card">
             <mat-card-header>
                 <!-- <div mat-card-avatar class="example-header-image"></div> -->
-                <mat-card-title>{{r.name}}</mat-card-title>
+                <mat-card-title style="font-family: 'DanaYadAlefAlefAlef-Normal';">{{r.name}}</mat-card-title>
             </mat-card-header>
-            <img id="recipe-img" mat-card-image src={{r.imageUrl}} alt={{r.name}}>
+            <img id="recipe-img" mat-card-image src={{r.imageUrl||r.image}} alt={{r.name}}>
             <mat-card-actions>
                 <div class="difficulty-rating">
                     <span class="rating-level" *ngFor="let level of [1, 2, 3, 4, 5] let i=index"
@@ -96,10 +96,8 @@
             <h2>
                 לא נמצאו תוצאות <br>
                 <br>
-                אבל אולי יעניין אותך גם…
             </h2>
         </div>
-
         }
     </div>
 </div>
