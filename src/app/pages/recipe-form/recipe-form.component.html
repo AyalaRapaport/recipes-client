@@ -119,7 +119,8 @@
       </div>
     </mat-expansion-panel>
   </mat-accordion>
-  <mat-error *ngIf="recipeForm.get('preparationInstructions')?.hasError('nonEmptyPreparationInstructions') && recipeForm.get('preparationInstructions')?.touched">
+  <mat-error
+    *ngIf="recipeForm.get('preparationInstructions')?.hasError('nonEmptyPreparationInstructions') && recipeForm.get('preparationInstructions')?.touched">
     חייב להיות לפחות הוראת הכנה אחת שאינה ריקה
   </mat-error>
 
@@ -146,8 +147,4 @@
 
   <button *ngIf="!isUpdateMode" type="submit" mat-flat-button class="button">הוסף מתכון</button>
   <button *ngIf="isUpdateMode" (click)="updateRecipe()" mat-flat-button>עדכן מתכון</button>
-
-  <div *ngIf="recipeForm.invalid">הטופס אינו תקין</div>
-
-  <div>{{ recipeForm.status === 'INVALID' }}</div>
 </form>
